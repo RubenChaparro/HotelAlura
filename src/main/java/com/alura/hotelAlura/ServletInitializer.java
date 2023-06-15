@@ -1,4 +1,4 @@
-package com.alura.hotel.hotelAlura;
+package com.alura.hotelAlura;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

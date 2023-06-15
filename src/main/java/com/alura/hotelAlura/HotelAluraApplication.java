@@ -1,4 +1,4 @@
-package com.alura.hotel.hotelAlura;
+package com.alura.hotelAlura;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
