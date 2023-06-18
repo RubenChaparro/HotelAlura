@@ -1,17 +1,16 @@
 package com.alura.hotelAlura.model.reservations;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record ReservationRecordData(
         @NotBlank
         String entrydate,
         @NotBlank
         String outdate,
-        @NotBlank
-        float price,
+        @NotNull
+        Float price,
         @NotBlank
         String payform
-
-        //Long idGuest
 ) {
 }

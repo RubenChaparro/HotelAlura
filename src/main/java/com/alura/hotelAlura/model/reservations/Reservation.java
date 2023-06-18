@@ -14,17 +14,17 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String entryDate;
-    private String outDate;
-    private float price;
+    private String entrydate;
+    private String outdate;
+    private Float price;
     private String payform;
-    @Column (name = "id_guest")
-    private Long idGuest;
+   /* @Column (name = "id_guest")
+    private Long idGuest;*/
 
 
     public Reservation(ReservationRecordData reservationRecordData) {
-        this.entryDate = reservationRecordData.entrydate();
-        this.outDate = reservationRecordData.outdate();
+        this.entrydate = reservationRecordData.entrydate();
+        this.outdate = reservationRecordData.outdate();
         this.price = reservationRecordData.price();
         this.payform = reservationRecordData.payform();
     }

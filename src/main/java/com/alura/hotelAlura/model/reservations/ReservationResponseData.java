@@ -4,10 +4,7 @@ public record ReservationResponseData(
        Long id,
        String entrydate,
        String outdate,
-       float price,
+       Float price,
        String payform
-
-       //Long idGuest
-
 ) {
 }

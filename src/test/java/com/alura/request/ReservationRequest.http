@@ -1,0 +1,14 @@
+# Add reservation
+POST http://localhost:8080/reservations
+Content-Type: application/json
+
+{
+  "entrydate": "2005-10-05",
+  "outdate": "2005-10-18",
+  "price": 180000.25,
+  "payform": "Tarjeta de credito"
+}
+
+###
+#Listar
+GET http://localhost:8080/reservations
