@@ -1,0 +1,15 @@
+###
+# Add guest
+POST jdbc:mysql://localhost/hotelAlura
+Content-Type: application/json
+
+{
+  "name": "content",
+  "lastname": "content",
+  "email": "content",
+  "document": "content",
+  "birthday": "content",
+  "country": "content",
+  "phone": "content",
+  "id_reservation": "content"
+}

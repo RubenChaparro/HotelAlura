@@ -1,0 +1,11 @@
+# Add reservation
+POST http://localhost:8080/reservations
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWVnby5yb2phcyIsImlzcyI6ImhvdGVsQWx1cmEiLCJpZCI6Mn0.x9P8y1TUh5514Cbj4C_wc45Sml6guN_Z1OtoZvVcGis
+
+{
+  "entrydate": "2005-12-05",
+  "outdate": "2005-12-18",
+  "price": 180000.25,
+  "payform": "Tarjeta de credito"
+}

@@ -1,4 +1,4 @@
-package com.alura.hotelAlura.model;
+package com.alura.hotelAlura.model.guests;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,5 +21,4 @@ public class Guest {
     private String country;
     private String phone;
     private Boolean activate;
-    private Long idReservation;
 }

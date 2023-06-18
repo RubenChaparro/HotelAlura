@@ -1,4 +1,4 @@
-package com.alura.hotelAlura.model;
+package com.alura.hotelAlura.model.reservations;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,4 +18,14 @@ public class Reservation {
     private String outDate;
     private float price;
     private String payform;
+    @Column (name = "id_guest")
+    private Long idGuest;
+
+
+    public Reservation(ReservationRecordData reservationRecordData) {
+        this.entryDate = reservationRecordData.entrydate();
+        this.outDate = reservationRecordData.outdate();
+        this.price = reservationRecordData.price();
+        this.payform = reservationRecordData.payform();
+    }
 }
