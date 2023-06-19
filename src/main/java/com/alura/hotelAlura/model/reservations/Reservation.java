@@ -18,9 +18,6 @@ public class Reservation {
     private String outdate;
     private Float price;
     private String payform;
-   /* @Column (name = "id_guest")
-    private Long idGuest;*/
-
 
     public Reservation(ReservationRecordData reservationRecordData) {
         this.entrydate = reservationRecordData.entrydate();
@@ -28,4 +25,18 @@ public class Reservation {
         this.price = reservationRecordData.price();
         this.payform = reservationRecordData.payform();
     }
+
+    public void editData(EditReservationData editReservationData) {
+
+        if (editReservationData.entrydate()!=null) {
+            this.entrydate = editReservationData.entrydate();
+        }
+        if (editReservationData.outdate()!=null) {
+            this.outdate=editReservationData.entrydate();
+        }
+        if (editReservationData.payform()!=null) {
+            this.payform=editReservationData.payform();
+        }
+    }
+
 }

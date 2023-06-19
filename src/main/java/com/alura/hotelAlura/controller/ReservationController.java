@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -19,20 +20,30 @@ public class ReservationController {
     @Autowired
     private ReservationRepository reservationRepository;
 
-    @PostMapping
-    public ResponseEntity<ReservationResponseData> RecordReservation(@RequestBody @Valid ReservationRecordData reservationRecordData, UriComponentsBuilder uriComponentsBuilder){
+/*    @PostMapping
+    public ResponseEntity<ReservationResponseData> RecordReservation(@RequestBody @Valid ReservationRecordData reservationRecordData, UriComponentsBuilder uriComponentsBuilder) {
         Reservation reservation = reservationRepository.save(new Reservation(reservationRecordData));
         ReservationResponseData reservationResponseData = new ReservationResponseData(
-                reservation.getId(),reservation.getEntrydate(),
+                reservation.getId(), reservation.getEntrydate(),
                 reservation.getOutdate(), reservation.getPrice(),
                 reservation.getPayform());
 
         URI url = uriComponentsBuilder.path("/reservations/{id}").buildAndExpand(reservation.getId()).toUri();
         return ResponseEntity.created(url).body(reservationResponseData);
-    }
+    }*/
 
     @GetMapping
     public Page<ReservationListData> ReservationList(@PageableDefault(size = 5, sort = "entrydate") Pageable pageable) {
-        return reservationRepository.findAll(pageable).map(ReservationListData :: new);
+        return reservationRepository.findAll(pageable).map(ReservationListData::new);
+    }
+
+    @PostMapping
+    @Transactional
+    public ResponseEntity<ReservationResponseData> editReservation(@RequestBody @Valid EditReservationData editReservationData) {
+        Reservation reservation = reservationRepository.getReferenceById(editReservationData.id());
+        reservation.editData(editReservationData);
+        return ResponseEntity.ok(new ReservationResponseData(reservation.getId(), reservation.getEntrydate(), reservation.getOutdate(), reservation.getPrice(), reservation.getPayform()));
     }
 }
+
+

@@ -12,3 +12,13 @@ Content-Type: application/json
 ###
 #Listar
 GET http://localhost:8080/reservations
+
+###
+#Actualizar medico (change to put)
+POST http://localhost:8080/reservations
+Content-Type: application/json
+
+{
+  "id" : 1,
+  "payform": "efectivo"
+}
