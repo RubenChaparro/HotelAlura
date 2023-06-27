@@ -13,6 +13,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+// Usando lo aplicado en la clase
+
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
@@ -20,8 +22,8 @@ public class ReservationController {
     @Autowired
     private ReservationRepository reservationRepository;
 
-/*    @PostMapping
-    public ResponseEntity<ReservationResponseData> RecordReservation(@RequestBody @Valid ReservationRecordData reservationRecordData, UriComponentsBuilder uriComponentsBuilder) {
+    @PostMapping
+    public ResponseEntity<ReservationResponseData> record(@RequestBody @Valid ReservationRecordData reservationRecordData, UriComponentsBuilder uriComponentsBuilder) {
         Reservation reservation = reservationRepository.save(new Reservation(reservationRecordData));
         ReservationResponseData reservationResponseData = new ReservationResponseData(
                 reservation.getId(), reservation.getEntrydate(),
@@ -30,19 +32,29 @@ public class ReservationController {
 
         URI url = uriComponentsBuilder.path("/reservations/{id}").buildAndExpand(reservation.getId()).toUri();
         return ResponseEntity.created(url).body(reservationResponseData);
-    }*/
+    }
 
-    @GetMapping
-    public Page<ReservationListData> ReservationList(@PageableDefault(size = 5, sort = "entrydate") Pageable pageable) {
+   @GetMapping
+    public Page<ReservationListData> list(@PageableDefault(size = 5, sort = "entrydate") Pageable pageable) {
         return reservationRepository.findAll(pageable).map(ReservationListData::new);
     }
 
-    @PostMapping
+
+    @PutMapping
     @Transactional
-    public ResponseEntity<ReservationResponseData> editReservation(@RequestBody @Valid EditReservationData editReservationData) {
-        Reservation reservation = reservationRepository.getReferenceById(editReservationData.id());
-        reservation.editData(editReservationData);
+    public ResponseEntity<ReservationResponseData> edit(@RequestBody @Valid ReservationEditData reservationEditData) {
+        Reservation reservation = reservationRepository.getReferenceById(reservationEditData.id());
+        reservation.editData(reservationEditData);
         return ResponseEntity.ok(new ReservationResponseData(reservation.getId(), reservation.getEntrydate(), reservation.getOutdate(), reservation.getPrice(), reservation.getPayform()));
+    }
+
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void delete(@PathVariable Long id) {
+        Reservation reservation = reservationRepository.getReferenceById(id);
+        reservationRepository.delete(reservation);
+        //return ResponseEntity.ok(reservationRepository.findAll().stream().map(ReservationListData::new));
     }
 }
 

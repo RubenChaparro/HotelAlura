@@ -1,24 +1,32 @@
 # Add reservation
 POST http://localhost:8080/reservations
 Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWVnby5yb2phcyIsImlzcyI6ImhvdGVsQWx1cmEiLCJpZCI6Mn0.x9P8y1TUh5514Cbj4C_wc45Sml6guN_Z1OtoZvVcGis
 
 {
-  "entrydate": "2005-10-05",
-  "outdate": "2005-10-18",
-  "price": 180000.25,
-  "payform": "Tarjeta de credito"
+  "entrydate": "2015-02-18",
+  "outdate": "2015-01-18",
+  "price": 250000.00,
+  "payform": "efectivo"
 }
 
 ###
 #Listar
 GET http://localhost:8080/reservations
-
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWVnby5yb2phcyIsImlzcyI6ImhvdGVsQWx1cmEiLCJpZCI6Mn0.x9P8y1TUh5514Cbj4C_wc45Sml6guN_Z1OtoZvVcGis
 ###
 #Actualizar medico (change to put)
-POST http://localhost:8080/reservations
+PUT http://localhost:8080/reservations
 Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWVnby5yb2phcyIsImlzcyI6ImhvdGVsQWx1cmEiLCJpZCI6Mn0.x9P8y1TUh5514Cbj4C_wc45Sml6guN_Z1OtoZvVcGis
 
 {
-  "id" : 1,
+  "id" : 5,
   "payform": "efectivo"
 }
+
+###
+
+#delete
+DELETE http://localhost:8080/reservations/2
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWVnby5yb2phcyIsImlzcyI6ImhvdGVsQWx1cmEiLCJpZCI6Mn0.x9P8y1TUh5514Cbj4C_wc45Sml6guN_Z1OtoZvVcGis

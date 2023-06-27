@@ -26,17 +26,20 @@ public class Reservation {
         this.payform = reservationRecordData.payform();
     }
 
-    public void editData(EditReservationData editReservationData) {
+    public void editData(ReservationEditData reservationEditData) {
 
-        if (editReservationData.entrydate()!=null) {
-            this.entrydate = editReservationData.entrydate();
+        if (reservationEditData.entrydate()!=null) {
+            this.entrydate = reservationEditData.entrydate();
         }
-        if (editReservationData.outdate()!=null) {
-            this.outdate=editReservationData.entrydate();
+        if (reservationEditData.outdate()!=null) {
+            this.outdate= reservationEditData.entrydate();
         }
-        if (editReservationData.payform()!=null) {
-            this.payform=editReservationData.payform();
+        if (reservationEditData.payform()!=null) {
+            this.payform= reservationEditData.payform();
         }
     }
 
+
+    public void delete(Reservation reservation) {
+    }
 }
