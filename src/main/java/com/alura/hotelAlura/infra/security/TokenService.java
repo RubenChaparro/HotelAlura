@@ -27,7 +27,6 @@ public class TokenService {
     }
 
     public String getSubject(String token) {
-        System.out.println(token);
         if (token == null) {
             throw new RuntimeException();
         }
