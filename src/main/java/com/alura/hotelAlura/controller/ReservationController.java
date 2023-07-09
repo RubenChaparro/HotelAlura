@@ -35,7 +35,7 @@ public class ReservationController {
     }
 
    @GetMapping
-    public Page<ReservationListData> list(@PageableDefault(size = 5, sort = "entrydate") Pageable pageable) {
+    public Page<ReservationListData> list(@PageableDefault(size = 50, sort = "id") Pageable pageable) {
         return reservationRepository.findAll(pageable).map(ReservationListData::new);
     }
 
