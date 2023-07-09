@@ -26,6 +26,9 @@ public class Reservation {
         this.payform = reservationRecordData.payform();
     }
 
+    public Reservation(String entrydate) {
+    }
+
     public void editData(ReservationEditData reservationEditData) {
 
         if (reservationEditData.entrydate()!=null) {
