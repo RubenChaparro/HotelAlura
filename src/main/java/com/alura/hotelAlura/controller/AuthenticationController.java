@@ -1,5 +1,6 @@
 package com.alura.hotelAlura.controller;
 
+import com.alura.hotelAlura.infra.security.DatosJWTToken;
 import com.alura.hotelAlura.infra.security.JWTTokenData;
 import com.alura.hotelAlura.infra.security.TokenService;
 import com.alura.hotelAlura.model.users.AuthenticationUserData;
@@ -29,6 +30,6 @@ public class AuthenticationController {
 
         var authenticateUser = authenticationManager.authenticate(authToken);
         var JWTToken = tokenService.generateToken((User) authenticateUser.getPrincipal());
-        return ResponseEntity.ok(JWTToken);
+        return ResponseEntity.ok(new DatosJWTToken(JWTToken));
     }
 }

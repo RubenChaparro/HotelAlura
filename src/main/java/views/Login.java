@@ -1,7 +1,6 @@
 package views;
 
-import com.alura.hotelAlura.infra.security.ResponseLogin;
-import com.alura.hotelAlura.model.reservations.RegisterReservation;
+import views.requestview.RequestView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -10,6 +9,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Login extends JFrame {
 
@@ -23,7 +25,7 @@ public class Login extends JFrame {
     int xMouse, yMouse;
     private JLabel labelExit;
 
-    private ResponseLogin responseLogin = new ResponseLogin();
+    //private RequestView requestView = new RequestView();
 
 
 
@@ -241,14 +243,16 @@ public class Login extends JFrame {
 
     private void login() {
 
-        String usuario = txtUsuario.getText();
-        String contrasenha = new String(txtContrasena.getPassword());
+        Map<String, Object> param = new LinkedHashMap<>();
+        param.put("login", txtUsuario.getText());
+        param.put("password", new String(txtContrasena.getPassword()) );
 
 
         try {
-            int authorization = responseLogin.response(usuario, contrasenha);
+            var authorization = RequestView.conection("login", "POST", param);
 
-            if (authorization == 200) {
+
+            if (Objects.equals(authorization.getCodeResponse(), 200)) {
                 MenuUsuario menuUsuario = new MenuUsuario();
                 menuUsuario.setVisible(true);
                 dispose();

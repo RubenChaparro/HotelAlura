@@ -1,7 +1,6 @@
 package views;
 
-import com.alura.hotelAlura.model.GetListData;
-import com.alura.hotelAlura.model.reservations.DeleteReservation;
+import views.requestview.RequestView;
 import org.json.JSONArray;
 
 import javax.swing.*;
@@ -12,7 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Objects;
 
 @SuppressWarnings("serial")
@@ -85,7 +83,7 @@ public class Busqueda extends JFrame {
         modeloReservaciones.setRowCount(0);
         JSONArray jsonReservacion;
         try {
-            jsonReservacion = GetListData.response(new URL("http://localhost:8080/reservations"));
+            jsonReservacion = (JSONArray) RequestView.conection("reservations", "GET", null).getJsonResponse().get("content");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -111,7 +109,7 @@ public class Busqueda extends JFrame {
         modeloHuespedes.setRowCount(0);
         JSONArray jsonHuesped;
         try {
-            jsonHuesped = GetListData.response(new URL("http://localhost:8080/guests"));
+            jsonHuesped = (JSONArray) RequestView.conection("guests", "GET", null).getJsonResponse().get("content");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -306,7 +304,8 @@ public class Busqueda extends JFrame {
                 modeloReservaciones.setRowCount(0);
                 JSONArray jsonReservacion;
                 try {
-                    jsonReservacion = GetListData.response(new URL("http://localhost:8080/reservations"));
+                    jsonReservacion = (JSONArray) RequestView.conection("reservations", "GET", null).getJsonResponse().get("content");
+                    ;
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -339,8 +338,11 @@ public class Busqueda extends JFrame {
 
 
     public void delete(Object id) throws IOException {
-        DeleteReservation deleteReservation = new DeleteReservation();
-        deleteReservation.delete( new URL("http://localhost:8080/reservations/" + id ));
+
+
+        RequestView.conection( "reservations/" + id.toString(), "DELETE", null);
+
+
     }
 
     //Código que permite mover la ventana por la pantalla según la posición de "x" y "y"

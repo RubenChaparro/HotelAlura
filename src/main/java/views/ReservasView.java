@@ -1,7 +1,8 @@
 package views;
 
+import views.requestview.RequestResponseData;
+import views.requestview.RequestView;
 import com.alura.hotelAlura.model.reservations.FormaDePago;
-import com.alura.hotelAlura.model.reservations.RegisterReservation;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
@@ -15,9 +16,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.awt.event.ActionListener;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -32,7 +33,6 @@ public class ReservasView extends JFrame {
     int xMouse, yMouse;
     private JLabel labelExit;
     private JLabel labelAtras;
-    private RegisterReservation registerReservation = new RegisterReservation();
 
 
     /**
@@ -263,7 +263,7 @@ public class ReservasView extends JFrame {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 if("date".equals((evt.getPropertyName()))) {
-                    float price = registerReservation.priceTotal(txtFechaEntrada.getDate(), (Date) evt.getNewValue());
+                    float price = RequestResponseData.priceTotal(txtFechaEntrada.getDate(), (Date) evt.getNewValue());
                     if (price <= 0) {
                         txtValor.setText("");
                     } else {
@@ -300,7 +300,11 @@ public class ReservasView extends JFrame {
         btnsiguiente.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                register();
+                try {
+                    register();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         btnsiguiente.setLayout(null);
@@ -317,28 +321,24 @@ public class ReservasView extends JFrame {
         lblNewLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
     }
 
-    private void register() {
-
+    private void register() throws IOException {
 
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 
+        Map<String, Object> param = new LinkedHashMap<>();
+        param.put("entrydate", formatDate.format(txtFechaEntrada.getDate()));
+        param.put("outdate", formatDate.format(txtFechaSalida.getDate()));
+        param.put("price", RequestResponseData.priceTotal(txtFechaEntrada.getDate(), txtFechaSalida.getDate()));
+        param.put("payform", txtFormaPago.getSelectedItem().toString());
 
-        String entrydate = formatDate.format(txtFechaEntrada.getDate());
-        String outdate = formatDate.format(txtFechaSalida.getDate());
-        float price = registerReservation.priceTotal(txtFechaEntrada.getDate(), txtFechaSalida.getDate());
-        String payform = txtFormaPago.getSelectedItem().toString();
+        var authorization = RequestView.conection("reservations", "POST", param);
 
-        int authorization;
-        try {
-            authorization = registerReservation.response(entrydate, outdate, price, payform);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-        if (authorization == 200 || authorization == 201) {
+        if (authorization.getCodeResponse() == 200 || authorization.getCodeResponse() == 201) {
             RegistroHuesped registro = new RegistroHuesped();
             registro.setVisible(true);
+            dispose();
         } else {
-            JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
+            JOptionPane.showMessageDialog(null, "Debes llenar todos los campos/Los datos estan en formato incorrecto.");
         }
     }
 

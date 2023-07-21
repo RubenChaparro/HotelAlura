@@ -1,6 +1,6 @@
 package views;
 
-import com.alura.hotelAlura.model.guests.RegisterGuest;
+import views.requestview.RequestView;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
@@ -11,6 +11,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings("serial")
@@ -26,7 +28,6 @@ public class RegistroHuesped extends JFrame {
     private JLabel labelExit;
     private JLabel labelAtras;
     int xMouse, yMouse;
-    RegisterGuest registerGuest = new RegisterGuest();
 
     /**
      * Launch the application.
@@ -147,7 +148,7 @@ public class RegistroHuesped extends JFrame {
         txtNacionalidad.setBounds(560, 350, 289, 36);
         txtNacionalidad.setBackground(SystemColor.text);
         txtNacionalidad.setFont(new Font("Roboto", Font.PLAIN, 16));
-        txtNacionalidad.setModel(new DefaultComboBoxModel(new String[] {"afgano-afgana", "alemán-", "alemana", "árabe-árabe", "argentino-argentina", "australiano-australiana", "belga-belga", "boliviano-boliviana", "brasileño-brasileña", "camboyano-camboyana", "canadiense-canadiense", "chileno-chilena", "chino-china", "colombiano-colombiana", "coreano-coreana", "costarricense-costarricense", "cubano-cubana", "danés-danesa", "ecuatoriano-ecuatoriana", "egipcio-egipcia", "salvadoreño-salvadoreña", "escocés-escocesa", "español-española", "estadounidense-estadounidense", "estonio-estonia", "etiope-etiope", "filipino-filipina", "finlandés-finlandesa", "francés-francesa", "galés-galesa", "griego-griega", "guatemalteco-guatemalteca", "haitiano-haitiana", "holandés-holandesa", "hondureño-hondureña", "indonés-indonesa", "inglés-inglesa", "iraquí-iraquí", "iraní-iraní", "irlandés-irlandesa", "israelí-israelí", "italiano-italiana", "japonés-japonesa", "jordano-jordana", "laosiano-laosiana", "letón-letona", "letonés-letonesa", "malayo-malaya", "marroquí-marroquí", "mexicano-mexicana", "nicaragüense-nicaragüense", "noruego-noruega", "neozelandés-neozelandesa", "panameño-panameña", "paraguayo-paraguaya", "peruano-peruana", "polaco-polaca", "portugués-portuguesa", "puertorriqueño-puertorriqueño", "dominicano-dominicana", "rumano-rumana", "ruso-rusa", "sueco-sueca", "suizo-suiza", "tailandés-tailandesa", "taiwanes-taiwanesa", "turco-turca", "ucraniano-ucraniana", "uruguayo-uruguaya", "venezolano-venezolana", "vietnamita-vietnamita"}));
+        txtNacionalidad.setModel(new DefaultComboBoxModel(new String[]{"afgano-afgana", "alemán-", "alemana", "árabe-árabe", "argentino-argentina", "australiano-australiana", "belga-belga", "boliviano-boliviana", "brasileño-brasileña", "camboyano-camboyana", "canadiense-canadiense", "chileno-chilena", "chino-china", "colombiano-colombiana", "coreano-coreana", "costarricense-costarricense", "cubano-cubana", "danés-danesa", "ecuatoriano-ecuatoriana", "egipcio-egipcia", "salvadoreño-salvadoreña", "escocés-escocesa", "español-española", "estadounidense-estadounidense", "estonio-estonia", "etiope-etiope", "filipino-filipina", "finlandés-finlandesa", "francés-francesa", "galés-galesa", "griego-griega", "guatemalteco-guatemalteca", "haitiano-haitiana", "holandés-holandesa", "hondureño-hondureña", "indonés-indonesa", "inglés-inglesa", "iraquí-iraquí", "iraní-iraní", "irlandés-irlandesa", "israelí-israelí", "italiano-italiana", "japonés-japonesa", "jordano-jordana", "laosiano-laosiana", "letón-letona", "letonés-letonesa", "malayo-malaya", "marroquí-marroquí", "mexicano-mexicana", "nicaragüense-nicaragüense", "noruego-noruega", "neozelandés-neozelandesa", "panameño-panameña", "paraguayo-paraguaya", "peruano-peruana", "polaco-polaca", "portugués-portuguesa", "puertorriqueño-puertorriqueño", "dominicano-dominicana", "rumano-rumana", "ruso-rusa", "sueco-sueca", "suizo-suiza", "tailandés-tailandesa", "taiwanes-taiwanesa", "turco-turca", "ucraniano-ucraniana", "uruguayo-uruguaya", "venezolano-venezolana", "vietnamita-vietnamita"}));
         contentPane.add(txtNacionalidad);
 
         JLabel lblNombre = new JLabel("NOMBRE");
@@ -289,7 +290,7 @@ public class RegistroHuesped extends JFrame {
 
         JPanel btnexit = new JPanel();
         btnexit.setBounds(857, 0, 53, 36);
-        contentPane.add(btnexit);
+
         btnexit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -312,6 +313,7 @@ public class RegistroHuesped extends JFrame {
         });
         btnexit.setLayout(null);
         btnexit.setBackground(Color.white);
+        contentPane.add(btnexit);
 
         labelExit = new JLabel("X");
         labelExit.setBounds(0, 0, 53, 36);
@@ -324,25 +326,22 @@ public class RegistroHuesped extends JFrame {
     private void register() throws IOException {
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 
+        Map<String, Object> param = new LinkedHashMap<>();
+        param.put("name", txtNombre.getText());
+        param.put("lastname", txtApellido.getText());
+        param.put("birthday", formatDate.format(txtFechaN.getDate()));
+        param.put("country", txtNacionalidad.getSelectedItem().toString());
+        param.put("phone", txtTelefono.getText());
 
-        String name = txtNombre.getText();
-        String lastname = txtApellido.getText();
-        String birthday = formatDate.format(txtFechaN.getDate());
-        String country = (String) txtNacionalidad.getSelectedItem();
-        String phone = txtTelefono.getText();
+        var authorization = RequestView.conection("guests", "POST", param);
 
-        int authorization;
-        try {
-            authorization = registerGuest.response(name, lastname, birthday, country, phone);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-        if (authorization == 200 || authorization == 201) {
+        if (authorization.getCodeResponse() == 200 || authorization.getCodeResponse() == 201) {
             JOptionPane.showMessageDialog(null, "Registro exitoso");
-            ReservasView registro = new ReservasView();
-            registro.setVisible(true);
+            ReservasView reservasView = new ReservasView();
+            reservasView.setVisible(true);
+            dispose();
         } else {
-            JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
+            JOptionPane.showMessageDialog(null, "Debes llenar todos los campos/Los datos estan en formato incorrecto.");
         }
     }
 
