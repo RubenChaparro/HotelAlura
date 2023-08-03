@@ -1,7 +1,16 @@
 package com.alura.hotelAlura.model.guests;
 
+import com.alura.hotelAlura.model.reservations.Reservation;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.proxy.HibernateProxy;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Table(name = "guests")
 @Entity
@@ -9,8 +18,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
 public class Guest {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,8 +28,8 @@ public class Guest {
     private String birthday;
     private String country;
     private String phone;
-    @Column(name = "id_reservation")
-    private Long idreservartion;
+    @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
+    private Set<Reservation> reservations = new HashSet<>();
 
     public Guest(GuestRecordData guestRecordData) {
         this.name = guestRecordData.name();
@@ -28,23 +37,50 @@ public class Guest {
         this.birthday = guestRecordData.birthday();
         this.country = guestRecordData.country();
         this.phone = guestRecordData.phone();
+        this.reservations = guestRecordData.reservation();
     }
 
     public void editData(GuestEditData guestEditData) {
-        if(guestEditData.name()!= null) {
+        if (guestEditData.name() != null) {
             this.name = guestEditData.name();
         }
-        if(guestEditData.lastname()!= null) {
+        if (guestEditData.lastname() != null) {
             this.lastname = guestEditData.lastname();
         }
-        if(guestEditData.birthday()!= null) {
+        if (guestEditData.birthday() != null) {
             this.birthday = guestEditData.birthday();
         }
-        if(guestEditData.country()!= null) {
+        if (guestEditData.country() != null) {
             this.country = guestEditData.country();
         }
-        if(guestEditData.phone()!= null) {
+        if (guestEditData.phone() != null) {
             this.phone = guestEditData.phone();
         }
+        if (guestEditData.reservation() != null) {
+            this.reservations = guestEditData.reservation();
+        }
+    }
+
+    public void setReservations(Set<Reservation> reservations) {
+        this.reservations = reservations;
+        for (Reservation reservation :reservations) {
+            reservation.setGuest(this);
+        }
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Guest guest = (Guest) o;
+        return getId() != null && Objects.equals(getId(), guest.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

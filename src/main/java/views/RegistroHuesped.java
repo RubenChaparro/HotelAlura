@@ -22,12 +22,18 @@ public class RegistroHuesped extends JFrame {
     private JTextField txtNombre;
     private JTextField txtApellido;
     private JTextField txtTelefono;
+
     private JTextField txtNreserva;
     private JDateChooser txtFechaN;
     private JComboBox txtNacionalidad;
     private JLabel labelExit;
     private JLabel labelAtras;
     int xMouse, yMouse;
+
+    private Map<String, Object> reserva;
+
+    public RegistroHuesped() {
+    }
 
     /**
      * Launch the application.
@@ -48,7 +54,9 @@ public class RegistroHuesped extends JFrame {
     /**
      * Create the frame.
      */
-    public RegistroHuesped() {
+    public RegistroHuesped(Map<String, Object> reserva) {
+
+        this.reserva = reserva;
 
         setIconImage(Toolkit.getDefaultToolkit().getImage(RegistroHuesped.class.getResource("/imagenes/lOGO-50PX.png")));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -209,7 +217,6 @@ public class RegistroHuesped extends JFrame {
         txtNreserva.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         txtNreserva.setEditable(false);
         txtNreserva.setBorder(javax.swing.BorderFactory.createEmptyBorder());
-        txtNreserva.setText("1");
         contentPane.add(txtNreserva);
 
         JSeparator separator_1_2 = new JSeparator();
@@ -333,13 +340,22 @@ public class RegistroHuesped extends JFrame {
         param.put("country", txtNacionalidad.getSelectedItem().toString());
         param.put("phone", txtTelefono.getText());
 
-        var authorization = RequestView.conection("guests", "POST", param);
+        var authorizationHuesped = RequestView.conection("guests", "POST", param);
 
-        if (authorization.getCodeResponse() == 200 || authorization.getCodeResponse() == 201) {
-            JOptionPane.showMessageDialog(null, "Registro exitoso");
-            ReservasView reservasView = new ReservasView();
-            reservasView.setVisible(true);
-            dispose();
+        if (authorizationHuesped.getCodeResponse() == 200 || authorizationHuesped.getCodeResponse() == 201) {
+
+            System.out.println(authorizationHuesped.getJsonResponse().toString());
+            //reserva.put("idguest", authorizationHuesped.getJsonResponse().get("id"));
+            var authorizationReserva = RequestView.conection("reservations", "POST", reserva);
+
+            if (authorizationReserva.getCodeResponse() == 200 || authorizationReserva.getCodeResponse() == 201) {
+                JOptionPane.showMessageDialog(null, "Registro exitoso");
+                ReservasView reservasView = new ReservasView();
+                reservasView.setVisible(true);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Debes llenar todos los campos/Los datos estan en formato incorrecto.");
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Debes llenar todos los campos/Los datos estan en formato incorrecto.");
         }

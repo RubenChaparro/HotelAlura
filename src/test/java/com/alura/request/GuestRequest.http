@@ -2,23 +2,22 @@
 # Add guest
 POST http://localhost:8080/guests
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWVnby5yb2phcyIsImlzcyI6ImhvdGVsQWx1cmEiLCJpZCI6Mn0.x9P8y1TUh5514Cbj4C_wc45Sml6guN_Z1OtoZvVcGis
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
 
 
 {
-  "name": "Ruben",
-  "lastname": "Chaparro",
-  "birthday": "1985-06-23",
+  "name": "Matilde",
+  "lastname": "Martinez",
+  "birthday": "1979-05-03",
   "country": "Colombia",
-  "phone": "3002260371"
-
+  "phone": "3203469914"
 }
 
 ###
 #List
 GET http://localhost:8080/guests
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWVnby5yb2phcyIsImlzcyI6ImhvdGVsQWx1cmEiLCJpZCI6Mn0.x9P8y1TUh5514Cbj4C_wc45Sml6guN_Z1OtoZvVcGis
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
 
 ###
 #Edit
@@ -39,6 +38,6 @@ Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWVnby5yb2phcyIs
 #Delete
 DELETE http://localhost:8080/guests/1
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWVnby5yb2phcyIsImlzcyI6ImhvdGVsQWx1cmEiLCJpZCI6Mn0.x9P8y1TUh5514Cbj4C_wc45Sml6guN_Z1OtoZvVcGis
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
 
 

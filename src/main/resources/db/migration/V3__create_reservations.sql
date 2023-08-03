@@ -5,7 +5,7 @@ CREATE TABLE reservations
     outdate   date         not null,
     price     float(40, 2) not null,
     payform   varchar(100) not null,
-    idguest bigint       null,
+    idguest   bigint       not null,
 
 
     primary key (id),

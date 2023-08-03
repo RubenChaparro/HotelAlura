@@ -1,5 +1,7 @@
 package com.alura.hotelAlura.model.reservations;
 
+import com.alura.hotelAlura.model.guests.Guest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -11,6 +13,9 @@ public record ReservationRecordData(
         @NotNull
         Float price,
         @NotBlank
-        String payform
+        String payform,
+        @Valid
+        Guest guest
 ) {
+
 }

@@ -5,8 +5,12 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 // Usando lo indicado por el cliente
 @RestController
@@ -16,15 +20,22 @@ public class GuestController {
     @Autowired
     GuestRepository guestRepository;
 
-
     @PostMapping
-    public void record(@RequestBody @Valid GuestRecordData guestRecordData) {
-        guestRepository.save(new Guest(guestRecordData));
+    public ResponseEntity<GuestResponseData> record(@RequestBody @Valid GuestRecordData guestRecordData,
+            UriComponentsBuilder uriComponentsBuilder) {
+        Guest guest = guestRepository.save(new Guest(guestRecordData));
+        GuestResponseData guestResponseData = new GuestResponseData(
+                guest.getId(), guest.getName(),
+                guest.getLastname(), guest.getBirthday(),
+                guest.getCountry(), guest.getPhone(), guest.getReservations());
+
+        URI url = uriComponentsBuilder.path("/guests/{id}").buildAndExpand(guest.getId()).toUri();
+        return ResponseEntity.created(url).body(guestResponseData);
     }
 
     @GetMapping
     public Page<GuestListData> list(Pageable pageable) {
-        return guestRepository.findAll(pageable).map(GuestListData :: new);
+        return guestRepository.findAll(pageable).map(GuestListData::new);
     }
 
     @PutMapping
@@ -35,7 +46,7 @@ public class GuestController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
+    public void delete(@PathVariable Long id) {
         Guest guest = guestRepository.getReferenceById(id);
         guestRepository.delete(guest);
     }

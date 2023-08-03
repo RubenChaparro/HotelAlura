@@ -323,6 +323,7 @@ public class ReservasView extends JFrame {
 
     private void register() throws IOException {
 
+        
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 
         Map<String, Object> param = new LinkedHashMap<>();
@@ -331,10 +332,8 @@ public class ReservasView extends JFrame {
         param.put("price", RequestResponseData.priceTotal(txtFechaEntrada.getDate(), txtFechaSalida.getDate()));
         param.put("payform", txtFormaPago.getSelectedItem().toString());
 
-        var authorization = RequestView.conection("reservations", "POST", param);
-
-        if (authorization.getCodeResponse() == 200 || authorization.getCodeResponse() == 201) {
-            RegistroHuesped registro = new RegistroHuesped();
+        if ((ReservasView.txtFechaEntrada.getDate() != null && ReservasView.txtFechaSalida.getDate() != null)) {
+            RegistroHuesped registro = new RegistroHuesped(param);
             registro.setVisible(true);
             dispose();
         } else {

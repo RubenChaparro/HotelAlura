@@ -1,5 +1,7 @@
 package com.alura.hotelAlura.controller;
 
+import com.alura.hotelAlura.model.guests.Guest;
+import com.alura.hotelAlura.model.guests.GuestRepository;
 import com.alura.hotelAlura.model.reservations.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,21 +22,27 @@ import java.net.URI;
 public class ReservationController {
 
     @Autowired
+    private GuestRepository guestRepository;
+    @Autowired
     private ReservationRepository reservationRepository;
 
     @PostMapping
     public ResponseEntity<ReservationResponseData> record(@RequestBody @Valid ReservationRecordData reservationRecordData, UriComponentsBuilder uriComponentsBuilder) {
+
+        Guest guest = guestRepository.getReferenceById(reservationRecordData.guest().getId());
+
         Reservation reservation = reservationRepository.save(new Reservation(reservationRecordData));
+        reservation.setGuest(guest);
         ReservationResponseData reservationResponseData = new ReservationResponseData(
                 reservation.getId(), reservation.getEntrydate(),
                 reservation.getOutdate(), reservation.getPrice(),
-                reservation.getPayform());
+                reservation.getPayform(), reservation.getGuest().getId());
 
         URI url = uriComponentsBuilder.path("/reservations/{id}").buildAndExpand(reservation.getId()).toUri();
         return ResponseEntity.created(url).body(reservationResponseData);
     }
 
-   @GetMapping
+    @GetMapping
     public Page<ReservationListData> list(@PageableDefault(size = 50, sort = "id") Pageable pageable) {
         return reservationRepository.findAll(pageable).map(ReservationListData::new);
     }
@@ -43,9 +51,17 @@ public class ReservationController {
     @PutMapping
     @Transactional
     public ResponseEntity<ReservationResponseData> edit(@RequestBody @Valid ReservationEditData reservationEditData) {
-        Reservation reservation = reservationRepository.getReferenceById(reservationEditData.id());
-        reservation.editData(reservationEditData);
-        return ResponseEntity.ok(new ReservationResponseData(reservation.getId(), reservation.getEntrydate(), reservation.getOutdate(), reservation.getPrice(), reservation.getPayform()));
+
+        if (reservationEditData.guest() != null) {
+            Guest guest = guestRepository.getReferenceById(reservationEditData.guest().getId());
+            Reservation reservation = reservationRepository.getReferenceById(reservationEditData.id());
+            reservation.editData(reservationEditData);
+            reservation.setGuest(guest);
+            return ResponseEntity.ok(new ReservationResponseData(reservation.getId(), reservation.getEntrydate(), reservation.getOutdate(), reservation.getPrice(), reservation.getPayform(), reservation.getGuest().getId()));
+        } else {
+            Reservation reservation = reservationRepository.getReferenceById(reservationEditData.id());
+            return ResponseEntity.ok(new ReservationResponseData(reservation.getId(), reservation.getEntrydate(), reservation.getOutdate(), reservation.getPrice(), reservation.getPayform(), reservation.getGuest().getId()));
+        }
     }
 
 

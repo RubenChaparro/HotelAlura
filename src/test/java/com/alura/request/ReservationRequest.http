@@ -1,13 +1,16 @@
 # Add reservation
 POST http://localhost:8080/reservations
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWVnby5yb2phcyIsImlzcyI6ImhvdGVsQWx1cmEiLCJpZCI6Mn0.x9P8y1TUh5514Cbj4C_wc45Sml6guN_Z1OtoZvVcGis
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
 
 {
-  "entrydate": "2016-02-18",
-  "outdate": "2015-01-18",
-  "price": 2800000.00,
-  "payform": "efectivo"
+  "entrydate": "2016-04-18",
+  "outdate": "2015-05-18",
+  "price": 200000.00,
+  "payform": "efectivo",
+  "guest": {
+    "id": 3
+  }
 }
 
 ###
@@ -18,15 +21,16 @@ Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJp
 #Actualizar medico (change to put)
 PUT http://localhost:8080/reservations
 Content-Type: application/json
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWVnby5yb2phcyIsImlzcyI6ImhvdGVsQWx1cmEiLCJpZCI6Mn0.x9P8y1TUh5514Cbj4C_wc45Sml6guN_Z1OtoZvVcGis
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
 
 {
-  "id" : 5,
+  "id": 3,
   "payform": "efectivo"
+
 }
 
 ###
 
 #delete
 DELETE http://localhost:8080/reservations/2
-Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWVnby5yb2phcyIsImlzcyI6ImhvdGVsQWx1cmEiLCJpZCI6Mn0.x9P8y1TUh5514Cbj4C_wc45Sml6guN_Z1OtoZvVcGis
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
