@@ -11,6 +11,7 @@ public record GuestResponseData(
         String date,
         String country,
         String phone,
+        String document,
         Set<Reservation> reservations
 ) {
 

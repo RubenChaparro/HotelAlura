@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Table(name = "guests")
+@Table(name = "guests", uniqueConstraints = {@UniqueConstraint(columnNames = {"document"})})
 @Entity
 @Getter
 @Setter
@@ -28,6 +28,7 @@ public class Guest {
     private String birthday;
     private String country;
     private String phone;
+    private String document;
     @OneToMany(mappedBy = "guest", cascade = CascadeType.ALL)
     private Set<Reservation> reservations = new HashSet<>();
 
@@ -37,6 +38,7 @@ public class Guest {
         this.birthday = guestRecordData.birthday();
         this.country = guestRecordData.country();
         this.phone = guestRecordData.phone();
+        this.document = guestRecordData.document();
         this.reservations = guestRecordData.reservation();
     }
 

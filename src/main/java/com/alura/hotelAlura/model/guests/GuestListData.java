@@ -6,9 +6,11 @@ public record GuestListData(
         String lastname,
         String birthday,
         String country,
-        String phone
+        String phone,
+        String document
+
 ) {
     public GuestListData(Guest guest) {
-        this(guest.getId(), guest.getName(), guest.getLastname(), guest.getBirthday(), guest.getCountry(), guest.getPhone());
+        this(guest.getId(), guest.getName(), guest.getLastname(), guest.getBirthday(), guest.getCountry(), guest.getPhone(), guest.getDocument());
     }
 }

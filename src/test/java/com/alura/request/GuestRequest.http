@@ -20,6 +20,13 @@ Content-Type: application/json
 Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
 
 ###
+#List
+GET http://localhost:8080/guests/5
+Content-Type: application/json
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
+
+
+###
 #Edit
 PUT http://localhost:8080/guests
 Content-Type: application/json

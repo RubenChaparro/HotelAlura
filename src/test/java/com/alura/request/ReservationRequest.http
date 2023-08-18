@@ -9,7 +9,7 @@ Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJp
   "price": 200000.00,
   "payform": "efectivo",
   "guest": {
-    "id": 3
+    "id":3
   }
 }
 
@@ -17,6 +17,13 @@ Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJp
 #Listar
 GET http://localhost:8080/reservations
 Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
+
+###
+#Listar
+GET http://localhost:8080/reservations/4
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
+
+
 ###
 #Actualizar medico (change to put)
 PUT http://localhost:8080/reservations

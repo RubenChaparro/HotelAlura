@@ -18,6 +18,8 @@ public record GuestRecordData(
         String country,
         @NotBlank
         String phone,
+        @NotBlank
+        String document,
         Set<Reservation> reservation
 
 ) {

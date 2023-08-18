@@ -1,7 +1,7 @@
 package views;
 
-import views.requestview.RequestView;
 import org.json.JSONArray;
+import views.requestview.RequestView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -11,7 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
-import java.util.Objects;
 
 @SuppressWarnings("serial")
 public class Busqueda extends JFrame {
@@ -22,9 +21,11 @@ public class Busqueda extends JFrame {
     private JTable tbReservas;
     private JLabel labelAtras;
     private JLabel labelExit;
+
+
+
     int xMouse, yMouse;
-    DefaultTableModel modeloHuespedes = new DefaultTableModel();
-    DefaultTableModel modeloReservaciones = new DefaultTableModel();
+
     /**
      * Launch the application.
      */
@@ -79,23 +80,9 @@ public class Busqueda extends JFrame {
         tbReservas = new JTable();
         tbReservas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tbReservas.setFont(new Font("Roboto", Font.PLAIN, 16));
-        modeloReservaciones.setColumnIdentifiers(new Object[]{"Numero de Reserva", "Fecha Check In", "Fecha Check Out", "Valor", "Forma de Pago"});
-        modeloReservaciones.setRowCount(0);
-        JSONArray jsonReservacion;
-        try {
-            jsonReservacion = (JSONArray) RequestView.conection("reservations", "GET", null).getJsonResponse().get("content");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        listarReservacion();
 
 
-        for (int i = 0; i < jsonReservacion.length(); i++) {
-
-            modeloReservaciones.addRow(new Object[]{
-                    jsonReservacion.getJSONObject(i).getLong("id"), jsonReservacion.getJSONObject(i).getString("outdate"), jsonReservacion.getJSONObject(i).getString("outdate"), jsonReservacion.getJSONObject(i).getInt("price"), jsonReservacion.getJSONObject(i).getString("payform")
-            });
-        }
-        tbReservas.setModel(modeloReservaciones);
         JScrollPane scroll_table = new JScrollPane(tbReservas);
         panel.addTab("Reservas", new ImageIcon(Busqueda.class.getResource("/imagenes/reservado.png")), scroll_table, null);
         scroll_table.setVisible(true);
@@ -104,23 +91,9 @@ public class Busqueda extends JFrame {
         tbHuespedes = new JTable();
         tbHuespedes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tbHuespedes.setFont(new Font("Roboto", Font.PLAIN, 16));
-        DefaultTableModel modeloHuespedes = new DefaultTableModel();
-        modeloHuespedes.setColumnIdentifiers(new Object[]{"No. Huesped", "Nombre", "Apellido", "Fecha de Nacimiento", "Nacionalidad", "Telefono", "No. Reserva"});
-        modeloHuespedes.setRowCount(0);
-        JSONArray jsonHuesped;
-        try {
-            jsonHuesped = (JSONArray) RequestView.conection("guests", "GET", null).getJsonResponse().get("content");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        listarHuesped();
 
-        for (int i = 0; i < jsonHuesped.length(); i++) {
 
-            modeloHuespedes.addRow(new Object[]{
-                    jsonHuesped.getJSONObject(i).getLong("id"), jsonHuesped.getJSONObject(i).getString("name"), jsonHuesped.getJSONObject(i).getString("lastname"), jsonHuesped.getJSONObject(i).getString("birthday"), jsonHuesped.getJSONObject(i).getString("country"), jsonHuesped.getJSONObject(i).getString("phone")
-            });
-        }
-        tbHuespedes.setModel(modeloHuespedes);
         JScrollPane scroll_tableHuespedes = new JScrollPane(tbHuespedes);
         panel.addTab("Huéspedes", new ImageIcon(Busqueda.class.getResource("/imagenes/pessoas.png")), scroll_tableHuespedes, null);
         scroll_tableHuespedes.setVisible(true);
@@ -227,30 +200,6 @@ public class Busqueda extends JFrame {
 
                 String busqueda = txtBuscar.getText();
 
-
-                for (int i = 0; i < jsonHuesped.length(); i++) {
-                    if (Objects.equals(busqueda, jsonHuesped.getJSONObject(i).getString("lastname"))) {
-
-                        modeloHuespedes.setColumnIdentifiers(new Object[]{"No. Huesped", "Nombre", "Apellido", "Fecha de Nacimiento", "Nacionalidad", "Telefono", "No. Reserva"});
-                        modeloHuespedes.setRowCount(0);
-                        modeloHuespedes.addRow(new Object[]{
-                                Long.toString(jsonHuesped.getJSONObject(i).getLong("id")), jsonHuesped.getJSONObject(i).getString("name"), jsonHuesped.getJSONObject(i).getString("lastname"), jsonHuesped.getJSONObject(i).getString("birthday"), jsonHuesped.getJSONObject(i).getString("country"), jsonHuesped.getJSONObject(i).getString("phone")
-                        });
-                        tbHuespedes.setModel(modeloHuespedes);
-                    } else {
-                        for (int j = 0; j < jsonReservacion.length(); j++) {
-                            if (Objects.equals(busqueda, Long.toString(jsonReservacion.getJSONObject(j).getLong("id")))) {
-                                DefaultTableModel modeloReservaciones = new DefaultTableModel();
-                                modeloReservaciones.setColumnIdentifiers(new Object[]{"Numero de Reserva", "Fecha Check In", "Fecha Check Out", "Valor", "Forma de Pago"});
-                                modeloReservaciones.setRowCount(0);
-                                modeloReservaciones.addRow(new Object[]{
-                                        jsonReservacion.getJSONObject(j).getLong("id"), jsonReservacion.getJSONObject(j).getString("outdate"), jsonReservacion.getJSONObject(j).getString("outdate"), jsonReservacion.getJSONObject(j).getInt("price"), jsonReservacion.getJSONObject(j).getString("payform")
-                                });
-                                tbReservas.setModel(modeloReservaciones);
-                            }
-                        }
-                    }
-                }
             }
         });
         btnbuscar.setLayout(null);
@@ -300,24 +249,8 @@ public class Busqueda extends JFrame {
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
-                modeloReservaciones.setColumnIdentifiers(new Object[]{"Numero de Reserva", "Fecha Check In", "Fecha Check Out", "Valor", "Forma de Pago"});
-                modeloReservaciones.setRowCount(0);
-                JSONArray jsonReservacion;
-                try {
-                    jsonReservacion = (JSONArray) RequestView.conection("reservations", "GET", null).getJsonResponse().get("content");
-                    ;
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-
-                for (int i = 0; i < jsonReservacion.length(); i++) {
-
-                    modeloReservaciones.addRow(new Object[]{
-                            jsonReservacion.getJSONObject(i).getLong("id"), jsonReservacion.getJSONObject(i).getString("outdate"), jsonReservacion.getJSONObject(i).getString("outdate"), jsonReservacion.getJSONObject(i).getInt("price"), jsonReservacion.getJSONObject(i).getString("payform")
-                    });
-                }
-                tbReservas.setModel(modeloReservaciones);
+                listarReservacion();
+                listarHuesped();
             }
         });
 
@@ -355,5 +288,55 @@ public class Busqueda extends JFrame {
         int x = evt.getXOnScreen();
         int y = evt.getYOnScreen();
         this.setLocation(x - xMouse, y - yMouse);
+    }
+
+    public JSONArray datostabla (String mapping) {
+        try {
+            return (JSONArray) RequestView.conection(mapping, "GET", null).getJsonResponse().get("content");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void listarHuesped() {
+        DefaultTableModel modeloHuespedes = new DefaultTableModel();
+        modeloHuespedes.setColumnIdentifiers(new Object[]{"No. Huesped", "Nombre", "Apellido", "Fecha de Nacimiento", "Nacionalidad", "Telefono", "No. Documento"});
+        modeloHuespedes.setRowCount(0);
+        JSONArray jsonHuesped = datostabla("guests");
+
+        for (int i = 0; i < jsonHuesped.length(); i++) {
+
+            modeloHuespedes.addRow(new Object[]{
+                    jsonHuesped.getJSONObject(i).getLong("id"),
+                    jsonHuesped.getJSONObject(i).getString("name"),
+                    jsonHuesped.getJSONObject(i).getString("lastname"),
+                    jsonHuesped.getJSONObject(i).getString("birthday"),
+                    jsonHuesped.getJSONObject(i).getString("country"),
+                    jsonHuesped.getJSONObject(i).getString("phone"),
+                    jsonHuesped.getJSONObject(i).getString("document")
+            });
+        }
+        tbHuespedes.setModel(modeloHuespedes);
+    }
+
+    public void listarReservacion() {
+        DefaultTableModel modeloReservaciones = new DefaultTableModel();
+
+        modeloReservaciones.setColumnIdentifiers(new Object[]{"Numero de Reserva", "Fecha Check In", "Fecha Check Out", "Valor", "Forma de Pago"});
+        modeloReservaciones.setRowCount(0);
+        JSONArray jsonReservacion = datostabla("Reservations");
+
+
+        for (int i = 0; i < jsonReservacion.length(); i++) {
+
+            modeloReservaciones.addRow(new Object[]{
+                    jsonReservacion.getJSONObject(i).getLong("id"),
+                    jsonReservacion.getJSONObject(i).getString("outdate"),
+                    jsonReservacion.getJSONObject(i).getString("outdate"),
+                    jsonReservacion.getJSONObject(i).getInt("price"),
+                    jsonReservacion.getJSONObject(i).getString("payform")
+            });
+        }
+        tbReservas.setModel(modeloReservaciones);
     }
 }
