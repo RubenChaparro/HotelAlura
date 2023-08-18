@@ -15,6 +15,7 @@ public record GuestEditData(
         String birthday,
         String country,
         String phone,
+        String document,
         Set<Reservation> reservation
 ) {
 }

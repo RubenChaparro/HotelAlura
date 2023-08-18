@@ -47,6 +47,12 @@ public class ReservationController {
         return reservationRepository.findAll(pageable).map(ReservationListData::new);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ReservationListData> listForId(@PathVariable Long id) {
+        Reservation reservation = reservationRepository.getReferenceById(id);
+        return ResponseEntity.ok(new ReservationListData(reservation));
+    }
+
 
     @PutMapping
     @Transactional

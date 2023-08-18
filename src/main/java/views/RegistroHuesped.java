@@ -1,7 +1,8 @@
 package views;
 
-import views.requestview.RequestView;
 import com.toedter.calendar.JDateChooser;
+import org.json.JSONArray;
+import views.requestview.RequestView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,7 +24,7 @@ public class RegistroHuesped extends JFrame {
     private JTextField txtApellido;
     private JTextField txtTelefono;
 
-    private JTextField txtNreserva;
+    private JTextField txtDocumento;
     private JDateChooser txtFechaN;
     private JComboBox txtNacionalidad;
     private JLabel labelExit;
@@ -203,21 +204,20 @@ public class RegistroHuesped extends JFrame {
         lblTitulo.setFont(new Font("Roboto Black", Font.PLAIN, 20));
         contentPane.add(lblTitulo);
 
-        JLabel lblNumeroReserva = new JLabel("NÚMERO DE RESERVA");
-        lblNumeroReserva.setBounds(560, 474, 253, 14);
-        lblNumeroReserva.setForeground(SystemColor.textInactiveText);
-        lblNumeroReserva.setFont(new Font("Roboto Black", Font.PLAIN, 14));
-        contentPane.add(lblNumeroReserva);
+        JLabel lblNumeroDocumento = new JLabel("NÚMERO DE DOCUMENTO");
+        lblNumeroDocumento.setBounds(560, 474, 253, 14);
+        lblNumeroDocumento.setForeground(SystemColor.textInactiveText);
+        lblNumeroDocumento.setFont(new Font("Roboto Black", Font.PLAIN, 14));
+        contentPane.add(lblNumeroDocumento);
 
-        txtNreserva = new JTextField();
-        txtNreserva.setFont(new Font("Roboto", Font.PLAIN, 16));
-        txtNreserva.setBounds(560, 495, 285, 33);
-        txtNreserva.setColumns(10);
-        txtNreserva.setBackground(Color.WHITE);
-        txtNreserva.setBorder(javax.swing.BorderFactory.createEmptyBorder());
-        txtNreserva.setEditable(false);
-        txtNreserva.setBorder(javax.swing.BorderFactory.createEmptyBorder());
-        contentPane.add(txtNreserva);
+        txtDocumento = new JTextField();
+        txtDocumento.setFont(new Font("Roboto", Font.PLAIN, 16));
+        txtDocumento.setBounds(560, 495, 285, 33);
+        txtDocumento.setColumns(10);
+        txtDocumento.setBackground(Color.WHITE);
+        txtDocumento.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        txtDocumento.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        contentPane.add(txtDocumento);
 
         JSeparator separator_1_2 = new JSeparator();
         separator_1_2.setBounds(560, 170, 289, 2);
@@ -339,23 +339,34 @@ public class RegistroHuesped extends JFrame {
         param.put("birthday", formatDate.format(txtFechaN.getDate()));
         param.put("country", txtNacionalidad.getSelectedItem().toString());
         param.put("phone", txtTelefono.getText());
+        param.put("document", txtDocumento.getText());
 
-        var authorizationHuesped = RequestView.conection("guests", "POST", param);
+        JSONArray jsonHuesped = (JSONArray) RequestView.conection("guests", "GET", null).getJsonResponse().get("content");
+        Map<String, Object> guest = new LinkedHashMap<>();
 
-        if (authorizationHuesped.getCodeResponse() == 200 || authorizationHuesped.getCodeResponse() == 201) {
-
-            System.out.println(authorizationHuesped.getJsonResponse().toString());
-            //reserva.put("idguest", authorizationHuesped.getJsonResponse().get("id"));
-            var authorizationReserva = RequestView.conection("reservations", "POST", reserva);
-
-            if (authorizationReserva.getCodeResponse() == 200 || authorizationReserva.getCodeResponse() == 201) {
-                JOptionPane.showMessageDialog(null, "Registro exitoso");
-                ReservasView reservasView = new ReservasView();
-                reservasView.setVisible(true);
-                dispose();
+        for (int i = 0; i < jsonHuesped.length(); i++) {
+            if (Objects.equals(txtDocumento.getText(), jsonHuesped.getJSONObject(i).getString("document"))) {
+                guest.put("id", jsonHuesped.getJSONObject(i).getLong("id"));
+                reserva.put("guest", guest);
+                break;
             } else {
-                JOptionPane.showMessageDialog(null, "Debes llenar todos los campos/Los datos estan en formato incorrecto.");
+                var authorizationHuesped = RequestView.conection("guests", "POST", param);
+                if (authorizationHuesped.getCodeResponse() == 200 || authorizationHuesped.getCodeResponse() == 201) {
+                    guest.put("id", authorizationHuesped.getJsonResponse().get("id"));
+                    reserva.put("guest", guest);
+                    break;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Debes llenar todos los campos/Los datos estan en formato incorrecto.");
+                }
             }
+        }
+        var authorizationReserva = RequestView.conection("reservations", "POST", reserva);
+
+        if (authorizationReserva.getCodeResponse() == 200 || authorizationReserva.getCodeResponse() == 201) {
+            JOptionPane.showMessageDialog(null, "Registro exitoso, su numero de reserva es " + authorizationReserva.getJsonResponse().get("id").toString());
+            ReservasView reservasView = new ReservasView();
+            reservasView.setVisible(true);
+            dispose();
         } else {
             JOptionPane.showMessageDialog(null, "Debes llenar todos los campos/Los datos estan en formato incorrecto.");
         }
