@@ -1,5 +1,6 @@
 package views;
 
+import views.requestview.RequestResponseData;
 import views.requestview.RequestView;
 
 import javax.swing.*;
@@ -247,12 +248,12 @@ public class Login extends JFrame {
         param.put("login", txtUsuario.getText());
         param.put("password", new String(txtContrasena.getPassword()) );
 
-
+        RequestResponseData authorization;
         try {
-            var authorization = RequestView.conection("login", "POST", param);
+            authorization = RequestView.conection("login", "POST", param);
 
 
-            if (Objects.equals(authorization.getCodeResponse(), 200)) {
+        if (Objects.equals(authorization.getCodeResponse(), 200)) {
                 MenuUsuario menuUsuario = new MenuUsuario();
                 menuUsuario.setVisible(true);
                 dispose();
@@ -260,7 +261,7 @@ public class Login extends JFrame {
                 JOptionPane.showMessageDialog(this, "Usuario o Contraseña no válidos");
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            JOptionPane.showMessageDialog(this, "Usuario o Contraseña no válidos");
         }
     }
 

@@ -2,6 +2,7 @@ package views;
 
 import com.toedter.calendar.JDateChooser;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import views.requestview.RequestView;
 
 import javax.swing.*;
@@ -95,7 +96,7 @@ public class RegistroHuesped extends JFrame {
         btnAtras.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                ReservasView reservas = null;
+                ReservasView reservas;
                 try {
                     reservas = new ReservasView();
                 } catch (IOException ex) {
@@ -345,21 +346,23 @@ public class RegistroHuesped extends JFrame {
         Map<String, Object> guest = new LinkedHashMap<>();
 
         for (int i = 0; i < jsonHuesped.length(); i++) {
-            if (Objects.equals(txtDocumento.getText(), jsonHuesped.getJSONObject(i).getString("document"))) {
-                guest.put("id", jsonHuesped.getJSONObject(i).getLong("id"));
+            JSONObject huespedes = jsonHuesped.getJSONObject(i);
+            if (Objects.equals(txtDocumento.getText(), huespedes.getString("document"))) {
+                guest.put("id", huespedes.getLong("id"));
                 reserva.put("guest", guest);
-                break;
-            } else {
-                var authorizationHuesped = RequestView.conection("guests", "POST", param);
-                if (authorizationHuesped.getCodeResponse() == 200 || authorizationHuesped.getCodeResponse() == 201) {
-                    guest.put("id", authorizationHuesped.getJsonResponse().get("id"));
-                    reserva.put("guest", guest);
-                    break;
-                } else {
-                    JOptionPane.showMessageDialog(null, "Debes llenar todos los campos/Los datos estan en formato incorrecto.");
-                }
             }
         }
+        if (!reserva.containsKey("guest")) {
+            var authorizationHuesped = RequestView.conection("guests", "POST", param);
+            if (authorizationHuesped.getCodeResponse() == 200 || authorizationHuesped.getCodeResponse() == 201) {
+                guest.put("id", authorizationHuesped.getJsonResponse().get("id"));
+                reserva.put("guest", guest);
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Debes llenar todos los campos/Los datos estan en formato incorrecto.");
+            }
+        }
+
         var authorizationReserva = RequestView.conection("reservations", "POST", reserva);
 
         if (authorizationReserva.getCodeResponse() == 200 || authorizationReserva.getCodeResponse() == 201) {

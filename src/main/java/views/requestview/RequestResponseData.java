@@ -16,6 +16,7 @@ public class RequestResponseData {
 
     private JSONObject jsonResponse;
     private int codeResponse;
+    @Getter
     private static String  jwtToken;
 
 
@@ -26,10 +27,6 @@ public class RequestResponseData {
 
     public RequestResponseData(int responseCode) {
         this.codeResponse = responseCode;
-    }
-
-    public static String getJwtToken() {
-        return jwtToken;
     }
 
     public static void setJwtToken(String jwtToken) {

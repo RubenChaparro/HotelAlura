@@ -1,9 +1,8 @@
 package views;
 
-import views.requestview.RequestResponseData;
-import views.requestview.RequestView;
 import com.alura.hotelAlura.model.reservations.FormaDePago;
 import com.toedter.calendar.JDateChooser;
+import views.requestview.RequestResponseData;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -27,6 +26,7 @@ public class ReservasView extends JFrame {
 
     private JPanel contentPane;
     public static JTextField txtValor;
+    public static JTextField txtHabitacion;
     public static JDateChooser txtFechaEntrada;
     public static JDateChooser txtFechaSalida;
     public static JComboBox<FormaDePago> txtFormaPago;
@@ -302,8 +302,8 @@ public class ReservasView extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 try {
                     register();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                } catch (NullPointerException o) {
+                    JOptionPane.showMessageDialog(null, "Debes llenar todos los campos/Los datos estan en formato incorrecto.");
                 }
             }
         });
@@ -321,7 +321,7 @@ public class ReservasView extends JFrame {
         lblNewLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
     }
 
-    private void register() throws IOException {
+    private void register(){
 
         
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -331,6 +331,7 @@ public class ReservasView extends JFrame {
         param.put("outdate", formatDate.format(txtFechaSalida.getDate()));
         param.put("price", RequestResponseData.priceTotal(txtFechaEntrada.getDate(), txtFechaSalida.getDate()));
         param.put("payform", txtFormaPago.getSelectedItem().toString());
+
 
         if ((ReservasView.txtFechaEntrada.getDate() != null && ReservasView.txtFechaSalida.getDate() != null)) {
             RegistroHuesped registro = new RegistroHuesped(param);

@@ -48,9 +48,8 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReservationListData> listForId(@PathVariable Long id) {
-        Reservation reservation = reservationRepository.getReferenceById(id);
-        return ResponseEntity.ok(new ReservationListData(reservation));
+    public Page<ReservationListData> listForId(@PathVariable Long id, Pageable pageable) {
+        return reservationRepository.findById(id, pageable).map(ReservationListData::new);
     }
 
 

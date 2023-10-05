@@ -1,8 +1,6 @@
 package com.alura.hotelAlura.controller;
 
 import com.alura.hotelAlura.model.guests.*;
-import com.alura.hotelAlura.model.reservations.Reservation;
-import com.alura.hotelAlura.model.reservations.ReservationListData;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,7 +23,7 @@ public class GuestController {
 
     @PostMapping
     public ResponseEntity<GuestResponseData> record(@RequestBody @Valid GuestRecordData guestRecordData,
-            UriComponentsBuilder uriComponentsBuilder) {
+                                                    UriComponentsBuilder uriComponentsBuilder) {
         Guest guest = guestRepository.save(new Guest(guestRecordData));
         GuestResponseData guestResponseData = new GuestResponseData(
                 guest.getId(), guest.getName(),
@@ -42,9 +40,8 @@ public class GuestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GuestListData> listForId(@PathVariable Long id) {
-        Guest guest = guestRepository.getReferenceById(id);
-        return ResponseEntity.ok(new GuestListData(guest));
+    public Page<GuestListData> listForId(@PathVariable Long id, Pageable pageable) {
+        return guestRepository.findById(id, pageable).map(GuestListData::new);
     }
 
     @PutMapping

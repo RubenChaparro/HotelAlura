@@ -1,6 +1,7 @@
 package com.alura.hotelAlura.model.reservations;
 
 import com.alura.hotelAlura.model.guests.Guest;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +29,7 @@ public class Reservation {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idguest")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Guest guest;
 
     public Reservation(ReservationRecordData reservationRecordData) {
@@ -65,7 +67,7 @@ public class Reservation {
                 ", outdate='" + outdate + '\'' +
                 ", price=" + price +
                 ", payform='" + payform + '\'' +
-                ", idguest=" + guest +
+                ", guest=" + guest +
                 '}';
     }
 

@@ -1,5 +1,6 @@
 package views;
 
+import lombok.SneakyThrows;
 import org.json.JSONArray;
 import views.requestview.RequestView;
 
@@ -11,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
+import java.util.Objects;
 
 @SuppressWarnings("serial")
 public class Busqueda extends JFrame {
@@ -21,7 +23,8 @@ public class Busqueda extends JFrame {
     private JTable tbReservas;
     private JLabel labelAtras;
     private JLabel labelExit;
-
+    private JSONArray jsonHuesped = datostabla("guests");
+    private JSONArray jsonReservacion = datostabla("reservations");
 
 
     int xMouse, yMouse;
@@ -80,7 +83,7 @@ public class Busqueda extends JFrame {
         tbReservas = new JTable();
         tbReservas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tbReservas.setFont(new Font("Roboto", Font.PLAIN, 16));
-        listarReservacion();
+        listarReservacion(jsonReservacion);
 
 
         JScrollPane scroll_table = new JScrollPane(tbReservas);
@@ -91,7 +94,7 @@ public class Busqueda extends JFrame {
         tbHuespedes = new JTable();
         tbHuespedes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tbHuespedes.setFont(new Font("Roboto", Font.PLAIN, 16));
-        listarHuesped();
+        listarHuesped(jsonHuesped);
 
 
         JScrollPane scroll_tableHuespedes = new JScrollPane(tbHuespedes);
@@ -199,7 +202,35 @@ public class Busqueda extends JFrame {
             public void mouseClicked(MouseEvent e) {
 
                 String busqueda = txtBuscar.getText();
+                JSONArray huespedes = new JSONArray();
+                JSONArray reservaciones = new JSONArray();
 
+                for (int x = 0; x < jsonReservacion.length(); x++) {
+                    if (Objects.equals(busqueda, jsonReservacion.getJSONObject(x).get("entrydate"))) {
+                        String idReservacion = String.valueOf(jsonReservacion.getJSONObject(x).get("id"));
+                        JSONArray obtenerReservacion = datostabla("reservations/" + idReservacion);
+                        reservaciones.putAll(obtenerReservacion);
+                        listarReservacion(reservaciones);
+                        String idHuesped = String.valueOf(jsonReservacion.getJSONObject(x).get("guest"));
+                        JSONArray obtenerHuesped = datostabla("guests/" + idHuesped);
+                        huespedes.putAll(obtenerHuesped);
+                        listarHuesped(huespedes);
+
+                    } else if (Objects.equals(busqueda, "")) {
+                        listarHuesped(jsonHuesped);
+                        listarReservacion(jsonReservacion);
+
+                    } else {
+                        for (int i = 0; i < jsonHuesped.length(); i++) {
+                            if (Objects.equals(busqueda, jsonHuesped.getJSONObject(i).get("document"))) {
+                                String idHuesped = String.valueOf(jsonHuesped.getJSONObject(i).get("id"));
+                                JSONArray obtenerHuesped = datostabla("guests/" + idHuesped);
+                                listarHuesped(obtenerHuesped);
+                                listarReservacion(jsonHuesped.getJSONObject(i).getJSONArray("reservations"));
+                            }
+                        }
+                    }
+                }
             }
         });
         btnbuscar.setLayout(null);
@@ -218,10 +249,10 @@ public class Busqueda extends JFrame {
 
         JPanel btnEditar = new JPanel();
         btnEditar.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            tbReservas.getSelectedRow();
-        }
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                tbReservas.getSelectedRow();
+            }
         });
 
         btnEditar.setLayout(null);
@@ -240,17 +271,24 @@ public class Busqueda extends JFrame {
         JPanel btnEliminar = new JPanel();
 
         btnEliminar.addMouseListener(new MouseAdapter() {
+            @SneakyThrows
             @Override
             public void mouseClicked(MouseEvent e) {
-                int rowSelect = tbReservas.getSelectedRow();
-                Object id = tbReservas.getValueAt(rowSelect, 0);
-                try {
-                    delete(id);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+
+                if (tbReservas.isFocusOwner()) {
+                    int rowSelect = tbReservas.getSelectedRow();
+                    Object id = tbReservas.getValueAt(rowSelect, 0);
+                    delete(id, "reservations");
+                    listarReservacion(jsonReservacion);
+
+                } else if (tbHuespedes.isFocusOwner()) {
+                    int rowSelect = tbHuespedes.getSelectedRow();
+                    Object id = tbHuespedes.getValueAt(rowSelect, 0);
+                    delete(id, "guests");
+                    listarReservacion(jsonReservacion);
+                    listarHuesped(jsonHuesped);
                 }
-                listarReservacion();
-                listarHuesped();
+
             }
         });
 
@@ -270,12 +308,9 @@ public class Busqueda extends JFrame {
     }
 
 
-    public void delete(Object id) throws IOException {
+    public void delete(Object id, String maping) throws IOException {
 
-
-        RequestView.conection( "reservations/" + id.toString(), "DELETE", null);
-
-
+        RequestView.conection(maping + '/' + id.toString(), "DELETE", null);
     }
 
     //Código que permite mover la ventana por la pantalla según la posición de "x" y "y"
@@ -290,7 +325,7 @@ public class Busqueda extends JFrame {
         this.setLocation(x - xMouse, y - yMouse);
     }
 
-    public JSONArray datostabla (String mapping) {
+    public JSONArray datostabla(String mapping) {
         try {
             return (JSONArray) RequestView.conection(mapping, "GET", null).getJsonResponse().get("content");
         } catch (IOException e) {
@@ -298,11 +333,10 @@ public class Busqueda extends JFrame {
         }
     }
 
-    public void listarHuesped() {
+    public void listarHuesped(JSONArray jsonHuesped) {
         DefaultTableModel modeloHuespedes = new DefaultTableModel();
         modeloHuespedes.setColumnIdentifiers(new Object[]{"No. Huesped", "Nombre", "Apellido", "Fecha de Nacimiento", "Nacionalidad", "Telefono", "No. Documento"});
         modeloHuespedes.setRowCount(0);
-        JSONArray jsonHuesped = datostabla("guests");
 
         for (int i = 0; i < jsonHuesped.length(); i++) {
 
@@ -319,22 +353,23 @@ public class Busqueda extends JFrame {
         tbHuespedes.setModel(modeloHuespedes);
     }
 
-    public void listarReservacion() {
+    public void listarReservacion(JSONArray jsonReservacion) {
         DefaultTableModel modeloReservaciones = new DefaultTableModel();
 
-        modeloReservaciones.setColumnIdentifiers(new Object[]{"Numero de Reserva", "Fecha Check In", "Fecha Check Out", "Valor", "Forma de Pago"});
+        modeloReservaciones.setColumnIdentifiers(new Object[]{"Numero de Reserva", "Fecha Check In", "Fecha Check Out", "Valor", "Forma de Pago", "No. de Huesped"});
         modeloReservaciones.setRowCount(0);
-        JSONArray jsonReservacion = datostabla("Reservations");
 
 
         for (int i = 0; i < jsonReservacion.length(); i++) {
 
             modeloReservaciones.addRow(new Object[]{
                     jsonReservacion.getJSONObject(i).getLong("id"),
-                    jsonReservacion.getJSONObject(i).getString("outdate"),
+                    jsonReservacion.getJSONObject(i).getString("entrydate"),
                     jsonReservacion.getJSONObject(i).getString("outdate"),
                     jsonReservacion.getJSONObject(i).getInt("price"),
-                    jsonReservacion.getJSONObject(i).getString("payform")
+                    jsonReservacion.getJSONObject(i).getString("payform"),
+                    jsonReservacion.getJSONObject(i).get("guest")
+
             });
         }
         tbReservas.setModel(modeloReservaciones);
