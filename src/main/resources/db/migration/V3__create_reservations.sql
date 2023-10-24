@@ -7,7 +7,6 @@ CREATE TABLE reservations
     payform   varchar(100) not null,
     idguest   bigint       not null,
 
-
     primary key (id),
     foreign key (idguest) references guests (id)
 );

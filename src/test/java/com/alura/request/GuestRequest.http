@@ -11,7 +11,7 @@ Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJp
   "birthday": "1979-05-03",
   "country": "Colombia",
   "phone": "3203469914",
-  "document": "3246546546"
+  "document": "32465465"
 }
 
 ###
@@ -34,12 +34,13 @@ Content-Type: application/json
 Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
 
 {
-  "id": 1,
-  "name": "Ruben",
+  "id": 8,
+  "name": "David",
   "lastname": "Chaparro",
-  "birthday": "1985-06-23",
+  "birthday": "1990-08-23",
   "country": "Colombia",
-  "phone": "3125196747"
+  "phone": "3156894781",
+  "document": "111222333"
 
 }
 ###

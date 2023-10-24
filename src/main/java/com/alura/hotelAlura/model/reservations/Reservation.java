@@ -46,7 +46,7 @@ public class Reservation {
             this.entrydate = reservationEditData.entrydate();
         }
         if (reservationEditData.outdate() != null) {
-            this.outdate = reservationEditData.entrydate();
+            this.outdate = reservationEditData.outdate();
         }
         if (reservationEditData.price() != null) {
             this.price = reservationEditData.price();

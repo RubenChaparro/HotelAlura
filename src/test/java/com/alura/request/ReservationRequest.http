@@ -4,8 +4,8 @@ Content-Type: application/json
 Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
 
 {
-  "entrydate": "2016-04-18",
-  "outdate": "2015-05-18",
+  "entrydate": "2023-10-13",
+  "outdate": "2023-12-18",
   "price": 200000.00,
   "payform": "efectivo",
   "guest": {
@@ -20,7 +20,7 @@ Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJp
 
 ###
 #Listar
-GET http://localhost:8080/reservations/4
+GET http://localhost:8080/reservations/2
 Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
 
 
@@ -31,9 +31,10 @@ Content-Type: application/json
 Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0ZTIzMTIiLCJpc3MiOiJob3RlbEFsdXJhIiwiaWQiOjF9.FjCJ4SPsyMlYAjuhyjfKyTrXAUB0m0K1FvNe3eVIiDE
 
 {
-  "id": 3,
-  "payform": "efectivo"
-
+  "id": 13,
+  "payform": "Efectivo",
+  "price" : 50000,
+  "outdate" : "2023-10-24"
 }
 
 ###

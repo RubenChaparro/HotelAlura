@@ -58,6 +58,9 @@ public class Guest {
         if (guestEditData.phone() != null) {
             this.phone = guestEditData.phone();
         }
+        if (guestEditData.document() != null) {
+            this.document = guestEditData.document();
+        }
         if (guestEditData.reservation() != null) {
             this.reservations = guestEditData.reservation();
         }
@@ -69,6 +72,7 @@ public class Guest {
             reservation.setGuest(this);
         }
     }
+
 
     @Override
     public String toString() {

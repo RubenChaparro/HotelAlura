@@ -12,6 +12,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings("serial")
@@ -23,6 +25,8 @@ public class Busqueda extends JFrame {
     private JTable tbReservas;
     private JLabel labelAtras;
     private JLabel labelExit;
+    DefaultTableModel modeloHuespedes = new DefaultTableModel();
+    DefaultTableModel modeloReservaciones = new DefaultTableModel();
     private JSONArray jsonHuesped = datostabla("guests");
     private JSONArray jsonReservacion = datostabla("reservations");
 
@@ -205,28 +209,34 @@ public class Busqueda extends JFrame {
                 JSONArray huespedes = new JSONArray();
                 JSONArray reservaciones = new JSONArray();
 
-                for (int x = 0; x < jsonReservacion.length(); x++) {
-                    if (Objects.equals(busqueda, jsonReservacion.getJSONObject(x).get("entrydate"))) {
-                        String idReservacion = String.valueOf(jsonReservacion.getJSONObject(x).get("id"));
-                        JSONArray obtenerReservacion = datostabla("reservations/" + idReservacion);
-                        reservaciones.putAll(obtenerReservacion);
-                        listarReservacion(reservaciones);
-                        String idHuesped = String.valueOf(jsonReservacion.getJSONObject(x).get("guest"));
-                        JSONArray obtenerHuesped = datostabla("guests/" + idHuesped);
-                        huespedes.putAll(obtenerHuesped);
-                        listarHuesped(huespedes);
+                if (busqueda.isEmpty()) {
+                    listarHuesped(jsonHuesped);
+                    listarReservacion(jsonReservacion);
 
-                    } else if (Objects.equals(busqueda, "")) {
-                        listarHuesped(jsonHuesped);
-                        listarReservacion(jsonReservacion);
+                } else {
+                    for (int x = 0; x < jsonReservacion.length(); x++) {
+                        if (Objects.equals(busqueda, jsonReservacion.getJSONObject(x).get("entrydate").toString())) {
+                            String idReservacion = String.valueOf(jsonReservacion.getJSONObject(x).get("id"));
+                            JSONArray obtenerReservacion = datostabla("reservations/" + idReservacion);
+                            reservaciones.putAll(obtenerReservacion);
+                            listarReservacion(reservaciones);
+                            String idHuesped = String.valueOf(jsonReservacion.getJSONObject(x).get("guest"));
+                            JSONArray obtenerHuesped = datostabla("guests/" + idHuesped);
+                            huespedes.putAll(obtenerHuesped);
+                            listarHuesped(huespedes);
+                        }
+                    }
 
-                    } else {
-                        for (int i = 0; i < jsonHuesped.length(); i++) {
-                            if (Objects.equals(busqueda, jsonHuesped.getJSONObject(i).get("document"))) {
-                                String idHuesped = String.valueOf(jsonHuesped.getJSONObject(i).get("id"));
-                                JSONArray obtenerHuesped = datostabla("guests/" + idHuesped);
-                                listarHuesped(obtenerHuesped);
-                                listarReservacion(jsonHuesped.getJSONObject(i).getJSONArray("reservations"));
+                    for (int i = 0; i < jsonHuesped.length(); i++) {
+                        if (busqueda.equals(jsonHuesped.getJSONObject(i).get("document").toString())) {
+                            String idHuesped = String.valueOf(jsonHuesped.getJSONObject(i).get("id"));
+                            JSONArray obtenerHuesped = datostabla("guests/" + idHuesped);
+                            listarHuesped(obtenerHuesped);
+                            for (int r = 0; r < jsonReservacion.length(); r++) {
+                                if (Objects.equals(idHuesped, jsonReservacion.getJSONObject(r).get("guest").toString())) {
+                                    reservaciones.putAll(datostabla("reservations/" + jsonReservacion.getJSONObject(r).get("id")));
+                                    listarReservacion(reservaciones);
+                                }
                             }
                         }
                     }
@@ -251,7 +261,12 @@ public class Busqueda extends JFrame {
         btnEditar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                tbReservas.getSelectedRow();
+
+                if (tbReservas.isFocusOwner()) {
+                    editarTablaReservas(tbReservas);
+                } else if (tbHuespedes.isFocusOwner()) {
+                    editarTablaHuespedes(tbHuespedes);
+                }
             }
         });
 
@@ -279,15 +294,18 @@ public class Busqueda extends JFrame {
                     int rowSelect = tbReservas.getSelectedRow();
                     Object id = tbReservas.getValueAt(rowSelect, 0);
                     delete(id, "reservations");
-                    listarReservacion(jsonReservacion);
+                    modeloReservaciones.fireTableDataChanged();
+
 
                 } else if (tbHuespedes.isFocusOwner()) {
                     int rowSelect = tbHuespedes.getSelectedRow();
                     Object id = tbHuespedes.getValueAt(rowSelect, 0);
                     delete(id, "guests");
-                    listarReservacion(jsonReservacion);
-                    listarHuesped(jsonHuesped);
                 }
+                listarReservacion(jsonReservacion);
+                modeloHuespedes.fireTableDataChanged();
+                listarHuesped(jsonHuesped);
+
 
             }
         });
@@ -334,7 +352,6 @@ public class Busqueda extends JFrame {
     }
 
     public void listarHuesped(JSONArray jsonHuesped) {
-        DefaultTableModel modeloHuespedes = new DefaultTableModel();
         modeloHuespedes.setColumnIdentifiers(new Object[]{"No. Huesped", "Nombre", "Apellido", "Fecha de Nacimiento", "Nacionalidad", "Telefono", "No. Documento"});
         modeloHuespedes.setRowCount(0);
 
@@ -354,14 +371,11 @@ public class Busqueda extends JFrame {
     }
 
     public void listarReservacion(JSONArray jsonReservacion) {
-        DefaultTableModel modeloReservaciones = new DefaultTableModel();
 
         modeloReservaciones.setColumnIdentifiers(new Object[]{"Numero de Reserva", "Fecha Check In", "Fecha Check Out", "Valor", "Forma de Pago", "No. de Huesped"});
         modeloReservaciones.setRowCount(0);
 
-
         for (int i = 0; i < jsonReservacion.length(); i++) {
-
             modeloReservaciones.addRow(new Object[]{
                     jsonReservacion.getJSONObject(i).getLong("id"),
                     jsonReservacion.getJSONObject(i).getString("entrydate"),
@@ -369,9 +383,87 @@ public class Busqueda extends JFrame {
                     jsonReservacion.getJSONObject(i).getInt("price"),
                     jsonReservacion.getJSONObject(i).getString("payform"),
                     jsonReservacion.getJSONObject(i).get("guest")
-
             });
         }
         tbReservas.setModel(modeloReservaciones);
+    }
+
+    public void editarTablaReservas(JTable tablaReservaciones) {
+
+        int fila = tablaReservaciones.getSelectedRow();
+        int columna = tablaReservaciones.getSelectedColumn();
+        var celda = tablaReservaciones.getValueAt(fila, columna);
+        var nombreDeColumna = tablaReservaciones.getColumnName(columna);
+        Object id = tablaReservaciones.getValueAt(fila, 0);
+
+        Map<String, Object> param = new LinkedHashMap<>();
+
+
+        param.put("id", id);
+        if (id == param.get("id")) {
+            switch (nombreDeColumna) {
+                case "Fecha Check In":
+                    param.put("entrydate", celda);
+                    break;
+                case "Fecha Check Out":
+                    param.put("outdate", celda);
+                    break;
+                case "Valor":
+                    param.put("price", celda);
+                    break;
+                case "Forma de Pago":
+                    param.put("payform", celda);
+                    break;
+                case "No. de Huesped":
+                    param.put("idguest", celda);
+            }
+        }
+
+        try {
+            RequestView.conection("reservations", "PUT", param);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void editarTablaHuespedes(JTable tablaHuespedes) {
+
+        int fila = tablaHuespedes.getSelectedRow();
+        int columna = tablaHuespedes.getSelectedColumn();
+        var celda = tablaHuespedes.getValueAt(fila, columna);
+        var nombreDeColumna = tablaHuespedes.getColumnName(columna);
+        Object id = tablaHuespedes.getValueAt(fila, 0);
+
+        Map<String, Object> param = new LinkedHashMap<>();
+        param.put("id", id);
+        if (id == param.get("id")) {
+            switch (nombreDeColumna) {
+                case "Nombre":
+                    param.put("name", celda);
+                    break;
+                case "Apellido":
+                    param.put("lastname", celda);
+                    break;
+                case "Fecha de Nacimiento":
+                    param.put("birthday", celda);
+                    break;
+                case "Nacionalidad":
+                    param.put("country", celda);
+                    break;
+                case "Telefono":
+                    param.put("phone", celda);
+                    break;
+                case "No. Documento":
+                    param.put("document", celda);
+                    break;
+            }
+        }
+
+
+        try {
+            RequestView.conection("guests", "PUT", param);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

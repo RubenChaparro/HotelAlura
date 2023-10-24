@@ -57,16 +57,9 @@ public class ReservationController {
     @Transactional
     public ResponseEntity<ReservationResponseData> edit(@RequestBody @Valid ReservationEditData reservationEditData) {
 
-        if (reservationEditData.guest() != null) {
-            Guest guest = guestRepository.getReferenceById(reservationEditData.guest().getId());
             Reservation reservation = reservationRepository.getReferenceById(reservationEditData.id());
             reservation.editData(reservationEditData);
-            reservation.setGuest(guest);
             return ResponseEntity.ok(new ReservationResponseData(reservation.getId(), reservation.getEntrydate(), reservation.getOutdate(), reservation.getPrice(), reservation.getPayform(), reservation.getGuest().getId()));
-        } else {
-            Reservation reservation = reservationRepository.getReferenceById(reservationEditData.id());
-            return ResponseEntity.ok(new ReservationResponseData(reservation.getId(), reservation.getEntrydate(), reservation.getOutdate(), reservation.getPrice(), reservation.getPayform(), reservation.getGuest().getId()));
-        }
     }
 
 
