@@ -10,7 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -244,9 +244,9 @@ public class Login extends JFrame {
 
     private void login() {
 
-        Map<String, Object> param = new LinkedHashMap<>();
+        Map<String, Object> param = new HashMap<>();
         param.put("login", txtUsuario.getText());
-        param.put("password", new String(txtContrasena.getPassword()) );
+        param.put("password", new String(txtContrasena.getPassword()));
 
         RequestResponseData authorization;
         try {

@@ -154,11 +154,11 @@ public class RegistroHuesped extends JFrame {
         txtFechaN.setDateFormatString("yyyy-MM-dd");
         contentPane.add(txtFechaN);
 
-        txtNacionalidad = new JComboBox();
+        txtNacionalidad = new JComboBox<>();
         txtNacionalidad.setBounds(560, 350, 289, 36);
         txtNacionalidad.setBackground(SystemColor.text);
         txtNacionalidad.setFont(new Font("Roboto", Font.PLAIN, 16));
-        txtNacionalidad.setModel(new DefaultComboBoxModel(new String[]{"afgano-afgana", "alemán-", "alemana", "árabe-árabe", "argentino-argentina", "australiano-australiana", "belga-belga", "boliviano-boliviana", "brasileño-brasileña", "camboyano-camboyana", "canadiense-canadiense", "chileno-chilena", "chino-china", "colombiano-colombiana", "coreano-coreana", "costarricense-costarricense", "cubano-cubana", "danés-danesa", "ecuatoriano-ecuatoriana", "egipcio-egipcia", "salvadoreño-salvadoreña", "escocés-escocesa", "español-española", "estadounidense-estadounidense", "estonio-estonia", "etiope-etiope", "filipino-filipina", "finlandés-finlandesa", "francés-francesa", "galés-galesa", "griego-griega", "guatemalteco-guatemalteca", "haitiano-haitiana", "holandés-holandesa", "hondureño-hondureña", "indonés-indonesa", "inglés-inglesa", "iraquí-iraquí", "iraní-iraní", "irlandés-irlandesa", "israelí-israelí", "italiano-italiana", "japonés-japonesa", "jordano-jordana", "laosiano-laosiana", "letón-letona", "letonés-letonesa", "malayo-malaya", "marroquí-marroquí", "mexicano-mexicana", "nicaragüense-nicaragüense", "noruego-noruega", "neozelandés-neozelandesa", "panameño-panameña", "paraguayo-paraguaya", "peruano-peruana", "polaco-polaca", "portugués-portuguesa", "puertorriqueño-puertorriqueño", "dominicano-dominicana", "rumano-rumana", "ruso-rusa", "sueco-sueca", "suizo-suiza", "tailandés-tailandesa", "taiwanes-taiwanesa", "turco-turca", "ucraniano-ucraniana", "uruguayo-uruguaya", "venezolano-venezolana", "vietnamita-vietnamita"}));
+        txtNacionalidad.setModel(new DefaultComboBoxModel<>(new String[]{"afganistan", "alemania", "Arabia Saudita", "Argentina", "Australia", "Belgica", "Bolivia", "Brasil", "Camboya", "Canada", "Chile", "China", "Colombia", "Corea", "Costa Rica", "Cuba", "Dinamarca", "Ecuador", "Egipto", "Salvador", "Escocia", "España", "EE.UU", "Estonia", "Etiopia", "Filipinas", "Finlandia", "Francia", "Galés", "Grecia", "Guatemala", "Haiti", "Paises Bajos", "Honduras", "Indonesia", "Inglaterra", "Iraq", "Iran", "Irlanda", "Israel", "Italia", "Japon", "Jordania", "Letonia","Malasia", "Marruecos", "Mexico", "Nicaragua", "Noruega", "Nueva Zelanda", "Panama", "Paraguay", "Peru", "Polonia", "Portugal", "Puerto Rico", "Republica Dominicana", "Rumania", "Rusia", "Suecia", "Suiza", "Tailandia", "Taiwan", "Turquia", "Ucrania", "Uruguay", "Venezuela", "Republica de Vietnam"}));
         contentPane.add(txtNacionalidad);
 
         JLabel lblNombre = new JLabel("NOMBRE");
@@ -179,7 +179,7 @@ public class RegistroHuesped extends JFrame {
         lblFechaN.setFont(new Font("Roboto Black", Font.PLAIN, 14));
         contentPane.add(lblFechaN);
 
-        JLabel lblNacionalidad = new JLabel("NACIONALIDAD");
+        JLabel lblNacionalidad = new JLabel("PAIS DE ORIGEN");
         lblNacionalidad.setBounds(560, 326, 255, 14);
         lblNacionalidad.setForeground(SystemColor.textInactiveText);
         lblNacionalidad.setFont(new Font("Roboto Black", Font.PLAIN, 14));
@@ -343,8 +343,8 @@ public class RegistroHuesped extends JFrame {
         param.put("document", txtDocumento.getText());
 
         JSONArray jsonHuesped = (JSONArray) RequestView.conection("guests", "GET", null).getJsonResponse().get("content");
-        Map<String, Object> guest = new LinkedHashMap<>();
 
+        Map<String, Object> guest = new LinkedHashMap<>();
         for (int i = 0; i < jsonHuesped.length(); i++) {
             JSONObject huespedes = jsonHuesped.getJSONObject(i);
             if (Objects.equals(txtDocumento.getText(), huespedes.getString("document"))) {

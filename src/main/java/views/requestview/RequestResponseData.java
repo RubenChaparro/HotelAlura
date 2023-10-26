@@ -20,7 +20,7 @@ public class RequestResponseData {
     private static String  jwtToken;
 
 
-    public RequestResponseData(JSONObject jsonResponse, int responseCode, HttpURLConnection con) {
+    public RequestResponseData(JSONObject jsonResponse, int responseCode) {
         this.jsonResponse = jsonResponse;
         this.codeResponse = responseCode;
     }
@@ -33,11 +33,5 @@ public class RequestResponseData {
         RequestResponseData.jwtToken = jwtToken;
     }
 
-    public static float priceTotal(Date entrydate, Date outdate) {
 
-        long miliseconds = outdate.getTime() - entrydate.getTime();
-        float days = (float) Duration.ofMillis(miliseconds).toDays();
-
-        return (days * 30000)+30000;
-    }
 }

@@ -55,7 +55,7 @@ public class RequestView {
                 RequestResponseData.setJwtToken(jsonObject.getString("jwtToken"));
             }
 
-            return new RequestResponseData(jsonObject, con.getResponseCode(), con);
+            return new RequestResponseData(jsonObject, con.getResponseCode());
         }
         return new RequestResponseData(con.getResponseCode());
     }

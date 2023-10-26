@@ -80,7 +80,7 @@ public class MenuPrincipal extends JFrame {
 		JLabel lblCopyR = new JLabel("Desarrollado por Ruben Chaparro © 2023");
 		lblCopyR.setBounds(315, 11, 284, 19);
 		lblCopyR.setForeground(new Color(240, 248, 255));
-		lblCopyR.setFont(new Font("Roboto", Font.PLAIN, 16));
+		lblCopyR.setFont(new Font("Roboto", Font.PLAIN, 14));
 		panel_1.add(lblCopyR);
 		
 		//Barra para controlar la ventana 

@@ -2,7 +2,6 @@ package views;
 
 import com.alura.hotelAlura.model.reservations.FormaDePago;
 import com.toedter.calendar.JDateChooser;
-import views.requestview.RequestResponseData;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -15,6 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -263,7 +263,7 @@ public class ReservasView extends JFrame {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 if("date".equals((evt.getPropertyName()))) {
-                    float price = RequestResponseData.priceTotal(txtFechaEntrada.getDate(), (Date) evt.getNewValue());
+                    float price = priceTotal(txtFechaEntrada.getDate(), (Date) evt.getNewValue());
                     if (price <= 0) {
                         txtValor.setText("");
                     } else {
@@ -287,12 +287,12 @@ public class ReservasView extends JFrame {
         txtValor.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         panel.add(txtValor);
 
-        txtFormaPago = new JComboBox();
+        txtFormaPago = new JComboBox<>();
         txtFormaPago.setBounds(68, 417, 289, 38);
         txtFormaPago.setBackground(SystemColor.text);
         txtFormaPago.setBorder(new LineBorder(new Color(255, 255, 255), 1, true));
         txtFormaPago.setFont(new Font("Roboto", Font.PLAIN, 14));
-        txtFormaPago.setModel(new DefaultComboBoxModel(FormaDePago.values()));
+        txtFormaPago.setModel(new DefaultComboBoxModel<>(FormaDePago.values()));
         panel.add(txtFormaPago);
 
 
@@ -329,7 +329,7 @@ public class ReservasView extends JFrame {
         Map<String, Object> param = new LinkedHashMap<>();
         param.put("entrydate", formatDate.format(txtFechaEntrada.getDate()));
         param.put("outdate", formatDate.format(txtFechaSalida.getDate()));
-        param.put("price", RequestResponseData.priceTotal(txtFechaEntrada.getDate(), txtFechaSalida.getDate()));
+        param.put("price", priceTotal(txtFechaEntrada.getDate(), txtFechaSalida.getDate()));
         param.put("payform", txtFormaPago.getSelectedItem().toString());
 
 
@@ -342,6 +342,13 @@ public class ReservasView extends JFrame {
         }
     }
 
+    public float priceTotal(Date entrydate, Date outdate) {
+
+        long miliseconds = outdate.getTime() - entrydate.getTime();
+        float days = (float) Duration.ofMillis(miliseconds).toDays();
+
+        return (days * 30000)+30000;
+    }
     //Código que permite mover la ventana por la pantalla según la posición de "x" y "y"
     private void headerMousePressed(MouseEvent evt) {
         xMouse = evt.getX();

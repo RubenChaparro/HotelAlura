@@ -204,43 +204,7 @@ public class Busqueda extends JFrame {
         btnbuscar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
-                String busqueda = txtBuscar.getText();
-                JSONArray huespedes = new JSONArray();
-                JSONArray reservaciones = new JSONArray();
-
-                if (busqueda.isEmpty()) {
-                    listarHuesped(jsonHuesped);
-                    listarReservacion(jsonReservacion);
-
-                } else {
-                    for (int x = 0; x < jsonReservacion.length(); x++) {
-                        if (Objects.equals(busqueda, jsonReservacion.getJSONObject(x).get("entrydate").toString())) {
-                            String idReservacion = String.valueOf(jsonReservacion.getJSONObject(x).get("id"));
-                            JSONArray obtenerReservacion = datostabla("reservations/" + idReservacion);
-                            reservaciones.putAll(obtenerReservacion);
-                            listarReservacion(reservaciones);
-                            String idHuesped = String.valueOf(jsonReservacion.getJSONObject(x).get("guest"));
-                            JSONArray obtenerHuesped = datostabla("guests/" + idHuesped);
-                            huespedes.putAll(obtenerHuesped);
-                            listarHuesped(huespedes);
-                        }
-                    }
-
-                    for (int i = 0; i < jsonHuesped.length(); i++) {
-                        if (busqueda.equals(jsonHuesped.getJSONObject(i).get("document").toString())) {
-                            String idHuesped = String.valueOf(jsonHuesped.getJSONObject(i).get("id"));
-                            JSONArray obtenerHuesped = datostabla("guests/" + idHuesped);
-                            listarHuesped(obtenerHuesped);
-                            for (int r = 0; r < jsonReservacion.length(); r++) {
-                                if (Objects.equals(idHuesped, jsonReservacion.getJSONObject(r).get("guest").toString())) {
-                                    reservaciones.putAll(datostabla("reservations/" + jsonReservacion.getJSONObject(r).get("id")));
-                                    listarReservacion(reservaciones);
-                                }
-                            }
-                        }
-                    }
-                }
+                busquedaHuespedReservaciones();
             }
         });
         btnbuscar.setLayout(null);
@@ -261,7 +225,6 @@ public class Busqueda extends JFrame {
         btnEditar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
                 if (tbReservas.isFocusOwner()) {
                     editarTablaReservas(tbReservas);
                 } else if (tbHuespedes.isFocusOwner()) {
@@ -289,24 +252,7 @@ public class Busqueda extends JFrame {
             @SneakyThrows
             @Override
             public void mouseClicked(MouseEvent e) {
-
-                if (tbReservas.isFocusOwner()) {
-                    int rowSelect = tbReservas.getSelectedRow();
-                    Object id = tbReservas.getValueAt(rowSelect, 0);
-                    delete(id, "reservations");
-                    modeloReservaciones.fireTableDataChanged();
-
-
-                } else if (tbHuespedes.isFocusOwner()) {
-                    int rowSelect = tbHuespedes.getSelectedRow();
-                    Object id = tbHuespedes.getValueAt(rowSelect, 0);
-                    delete(id, "guests");
-                }
-                listarReservacion(jsonReservacion);
-                modeloHuespedes.fireTableDataChanged();
-                listarHuesped(jsonHuesped);
-
-
+                eliminarHuespedReservacion();
             }
         });
 
@@ -325,22 +271,59 @@ public class Busqueda extends JFrame {
         setResizable(false);
     }
 
+    private void eliminarHuespedReservacion() throws IOException {
+        if (tbReservas.isFocusOwner()) {
+            int rowSelect = tbReservas.getSelectedRow();
+            Object id = tbReservas.getValueAt(rowSelect, 0);
+            delete(id, "reservations");
+        } else if (tbHuespedes.isFocusOwner()) {
+            int rowSelect = tbHuespedes.getSelectedRow();
+            Object id = tbHuespedes.getValueAt(rowSelect, 0);
+            delete(id, "guests");
+        }
+    }
+
+    private void busquedaHuespedReservaciones() {
+
+        String busqueda = txtBuscar.getText();
+        JSONArray huespedes = new JSONArray();
+        JSONArray reservaciones = new JSONArray();
+
+        if (busqueda.isEmpty()) {
+            listarHuesped(jsonHuesped);
+            listarReservacion(jsonReservacion);
+        } else {
+            for (int x = 0; x < jsonReservacion.length(); x++) {
+                if (Objects.equals(busqueda, jsonReservacion.getJSONObject(x).get("entrydate").toString())) {
+                    String idReservacion = String.valueOf(jsonReservacion.getJSONObject(x).get("id"));
+                    JSONArray obtenerReservacion = datostabla("reservations/" + idReservacion);
+                    reservaciones.putAll(obtenerReservacion);
+                    listarReservacion(reservaciones);
+                    String idHuesped = String.valueOf(jsonReservacion.getJSONObject(x).get("guest"));
+                    JSONArray obtenerHuesped = datostabla("guests/" + idHuesped);
+                    huespedes.putAll(obtenerHuesped);
+                    listarHuesped(huespedes);
+                }
+            }
+
+            for (int i = 0; i < jsonHuesped.length(); i++) {
+                if (busqueda.equals(jsonHuesped.getJSONObject(i).get("document").toString())) {
+                    String idHuesped = String.valueOf(jsonHuesped.getJSONObject(i).get("id"));
+                    JSONArray obtenerHuesped = datostabla("guests/" + idHuesped);
+                    listarHuesped(obtenerHuesped);
+                    for (int r = 0; r < jsonReservacion.length(); r++) {
+                        if (Objects.equals(idHuesped, jsonReservacion.getJSONObject(r).get("guest").toString())) {
+                            reservaciones.putAll(datostabla("reservations/" + jsonReservacion.getJSONObject(r).get("id")));
+                            listarReservacion(reservaciones);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     public void delete(Object id, String maping) throws IOException {
-
         RequestView.conection(maping + '/' + id.toString(), "DELETE", null);
-    }
-
-    //Código que permite mover la ventana por la pantalla según la posición de "x" y "y"
-    private void headerMousePressed(MouseEvent evt) {
-        xMouse = evt.getX();
-        yMouse = evt.getY();
-    }
-
-    private void headerMouseDragged(MouseEvent evt) {
-        int x = evt.getXOnScreen();
-        int y = evt.getYOnScreen();
-        this.setLocation(x - xMouse, y - yMouse);
     }
 
     public JSONArray datostabla(String mapping) {
@@ -394,10 +377,9 @@ public class Busqueda extends JFrame {
         int columna = tablaReservaciones.getSelectedColumn();
         var celda = tablaReservaciones.getValueAt(fila, columna);
         var nombreDeColumna = tablaReservaciones.getColumnName(columna);
-        Object id = tablaReservaciones.getValueAt(fila, 0);
+        var id = tablaReservaciones.getValueAt(fila, 0);
 
         Map<String, Object> param = new LinkedHashMap<>();
-
 
         param.put("id", id);
         if (id == param.get("id")) {
@@ -416,10 +398,10 @@ public class Busqueda extends JFrame {
                     break;
                 case "No. de Huesped":
                     param.put("idguest", celda);
+                    break;
             }
         }
-
-        try {
+       try {
             RequestView.conection("reservations", "PUT", param);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -458,12 +440,23 @@ public class Busqueda extends JFrame {
                     break;
             }
         }
-
-
         try {
             RequestView.conection("guests", "PUT", param);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    //Código que permite mover la ventana por la pantalla según la posición de "x" y "y"
+    private void headerMousePressed(MouseEvent evt) {
+        xMouse = evt.getX();
+        yMouse = evt.getY();
+    }
+
+    private void headerMouseDragged(MouseEvent evt) {
+        int x = evt.getXOnScreen();
+        int y = evt.getYOnScreen();
+        this.setLocation(x - xMouse, y - yMouse);
     }
 }
